@@ -1,0 +1,3264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="color-scheme" content="dark"/>
+  <title>Study Planner • IB + Lebanese + French</title>
+  <style>
+    :root{
+      --bg:#060812;
+      --panel:rgba(14,18,30,.66);
+      --panel2:rgba(10,14,26,.52);
+      --text:#edf4ff;
+      --muted:#a9b6cf;
+      --line:#263454;
+      --shadow:0 18px 55px rgba(0,0,0,.55);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+
+      --accent:#6aa7ff;
+      --teal:#4de0d6;
+      --green:#35d07f;
+      --yellow:#ffce5c;
+      --red:#ff6a6a;
+      --purple:#b78bff;
+
+      --glow: 0 0 0 1px rgba(106,167,255,.35), 0 0 28px rgba(106,167,255,.18);
+      --glow2:0 0 0 1px rgba(77,224,214,.35), 0 0 26px rgba(77,224,214,.16);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 820px at 12% 10%, rgba(106,167,255,.22), transparent 60%),
+        radial-gradient(1100px 760px at 84% 18%, rgba(77,224,214,.14), transparent 56%),
+        radial-gradient(950px 760px at 50% 112%, rgba(183,139,255,.12), transparent 58%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+
+    .wrap{max-width:1620px;margin:14px auto;padding:0 16px 56px}
+    header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+    .title{display:flex;flex-direction:column;gap:6px}
+    .title h1{margin:0;font-size:20px;letter-spacing:.2px}
+    .title p{margin:0;color:var(--muted);font-size:13px;max-width:1020px;line-height:1.3}
+    .top-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+
+    .grid{display:grid;grid-template-columns: .95fr 1.05fr;gap:14px;align-items:start}
+    @media (max-width: 1180px){
+      .grid{grid-template-columns:1fr}
+      header{flex-direction:column}
+      .top-actions{justify-content:flex-start}
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(38,52,84,.85);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(720px 230px at 18% 0%, rgba(106,167,255,.18), transparent 60%),
+        radial-gradient(740px 260px at 84% 10%, rgba(77,224,214,.10), transparent 60%);
+      pointer-events:none; opacity:.85;
+    }
+    .hd{
+      padding:12px 14px 10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(38,52,84,.6);
+      background: rgba(14,18,30,.55);
+      backdrop-filter: blur(10px);
+      position:relative;
+    }
+    .hd h2{margin:0;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#d7e2fb}
+    .bd{padding:14px;position:relative}
+
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      box-shadow:0 8px 22px rgba(0,0,0,.35);
+      font-size:13px;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      white-space:nowrap;
+      transition: transform .08s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover{border-color:#33466a; box-shadow:0 10px 28px rgba(0,0,0,.45)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{border-color:rgba(106,167,255,.62); background:rgba(106,167,255,.16); box-shadow:var(--glow)}
+    .btn.good{border-color:rgba(53,208,127,.62); background:rgba(53,208,127,.12)}
+    .btn.warn{border-color:rgba(255,206,92,.62); background:rgba(255,206,92,.12)}
+    .btn.danger{border-color:rgba(255,106,106,.62); background:rgba(255,106,106,.12)}
+    .btn.ghost{background:rgba(10,14,26,.35)}
+    .btn.small{padding:8px 10px;font-size:12px}
+
+    .switch{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 10px;
+      background:rgba(10,14,26,.35);
+      cursor:pointer;
+      user-select:none;
+      font-size:12px;
+      color:var(--muted);
+      transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    .switch:hover{border-color:#33466a}
+    .switch input{width:auto}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .row.tight{gap:8px}
+    .split{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 780px){ .split{grid-template-columns:1fr} }
+
+    label{font-size:12px;color:var(--muted)}
+    input,select,textarea{
+      width:100%;
+      border:1px solid rgba(38,52,84,.95);
+      background: rgba(6,8,18,.55);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 10px;
+      font-size:13px;
+      outline:none;
+      transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    input:focus,select:focus,textarea:focus{border-color:rgba(106,167,255,.72); box-shadow:var(--glow)}
+    textarea{min-height:84px; resize:vertical}
+
+    .field{display:flex;flex-direction:column;gap:6px;min-width:180px;flex:1}
+    .field.small{min-width:140px;flex:.65}
+    .field.tiny{min-width:110px;flex:.45}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:999px;
+      background:rgba(10,14,26,.35);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .stat{display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:10px}
+    @media (max-width: 780px){ .stat{grid-template-columns: repeat(2, minmax(0, 1fr))} }
+    .kpi{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:16px;
+      padding:12px;
+      background:rgba(10,14,26,.35);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .kpi .n{font-size:22px;font-weight:760;letter-spacing:.2px}
+    .kpi .t{font-size:12px;color:var(--muted);margin-top:4px}
+
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{
+      padding:9px 11px;
+      border:1px solid rgba(38,52,84,.9);
+      background:rgba(10,14,26,.35);
+      border-radius:999px;
+      font-size:13px;
+      cursor:pointer;
+      color:var(--muted);
+      user-select:none;
+      transition:border-color .15s ease, box-shadow .15s ease, transform .08s ease;
+    }
+    .tab:hover{border-color:#33466a}
+    .tab:active{transform:translateY(1px)}
+    .tab.active{
+      border-color:rgba(106,167,255,.65);
+      background:rgba(106,167,255,.16);
+      color:var(--text);
+      box-shadow:var(--glow);
+    }
+    .views > section{display:none}
+    .views > section.active{display:block}
+
+    .badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(38,52,84,.9);
+      color:var(--muted);
+      background:rgba(6,8,18,.35);
+      white-space:nowrap;
+    }
+    .badge.good{border-color:rgba(53,208,127,.62); color:#bdf7d6; background:rgba(53,208,127,.10)}
+    .badge.warn{border-color:rgba(255,206,92,.62); color:#ffe7b2; background:rgba(255,206,92,.10)}
+    .badge.bad{border-color:rgba(255,106,106,.62); color:#ffd0d0; background:rgba(255,106,106,.10)}
+    .badge.r{border-color:rgba(255,106,106,.72); color:#ffd0d0; background:rgba(255,106,106,.14)}
+    .badge.y{border-color:rgba(255,206,92,.72); color:#ffe7b2; background:rgba(255,206,92,.14)}
+    .badge.g{border-color:rgba(53,208,127,.72); color:#bdf7d6; background:rgba(53,208,127,.14)}
+
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{
+      border:1px solid rgba(38,52,84,.9);
+      background:rgba(10,14,26,.35);
+      border-radius:16px;
+      padding:12px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .item .meta{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .item .meta .top{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .item .title{
+      font-weight:690;
+      font-size:14px;
+      margin:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 980px;
+    }
+    .item .desc{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
+    .item .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+    .planner{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(10,14,26,.35);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .planner-top{
+      padding:12px;
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      border-bottom:1px solid rgba(38,52,84,.6);
+      background:rgba(14,18,30,.55);
+      backdrop-filter: blur(10px);
+    }
+    .planner-top .left,.planner-top .right{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid rgba(38,52,84,.55); padding:10px; vertical-align:top}
+    th{
+      text-align:left;
+      font-size:12px;
+      color:var(--muted);
+      background:rgba(6,8,18,.35);
+      position:sticky; top:0; z-index:1;
+      backdrop-filter: blur(10px);
+    }
+
+    .slot{
+      display:flex; flex-direction:column; gap:8px;
+      padding:10px;
+      border-radius:14px;
+      border:1px dashed rgba(38,52,84,.85);
+      background:rgba(6,8,18,.25);
+      min-height:112px;
+      position:relative;
+      overflow:hidden;
+      transition:border-color .15s ease, box-shadow .15s ease, transform .10s ease;
+      cursor:pointer;
+    }
+    .slot:hover{transform:translateY(-1px); border-color:rgba(106,167,255,.45)}
+    .slot:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(600px 120px at 18% 0%, rgba(106,167,255,.16), transparent 60%),
+        radial-gradient(600px 160px at 90% 10%, rgba(77,224,214,.10), transparent 60%);
+      pointer-events:none;
+      opacity:.85;
+    }
+    .slot[data-diff="Red"]{border-color:rgba(255,106,106,.55)}
+    .slot[data-diff="Yellow"]{border-color:rgba(255,206,92,.55)}
+    .slot[data-diff="Green"]{border-color:rgba(53,208,127,.55)}
+    .slot.linked{box-shadow:var(--glow2);border-style:solid;border-color:rgba(77,224,214,.72)}
+    .slot .slot-row{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+    .slot .slot-row .tiny{flex:.95;min-width:160px}
+    .slot .slot-row .tiny2{flex:.35;min-width:110px}
+    .slot .slot-row .tiny3{flex:.6;min-width:160px}
+    .slot .slot-row .tiny4{flex:.35;min-width:120px}
+    .slot .slot-row input,.slot .slot-row select{padding:8px 9px;border-radius:12px;font-size:12px}
+    .slot .slot-footer{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      color:var(--muted);font-size:12px;position:relative;
+    }
+    .questTag{font-size:12px;font-weight:850;letter-spacing:.15px}
+    .check{display:flex;align-items:center;gap:8px}
+    input[type="checkbox"]{width:auto;transform:translateY(1px)}
+
+    .timer{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:18px;
+      padding:12px;
+      background:rgba(10,14,26,.35);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .timer-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .timer-face{font-family:var(--mono);font-size:28px;letter-spacing:1px;font-weight:850;text-shadow:0 0 18px rgba(106,167,255,.18)}
+    .timer-mini{font-size:12px;color:var(--muted)}
+    .timer-controls{display:flex;gap:8px;flex-wrap:wrap}
+    .timer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:780px){.timer-grid{grid-template-columns:1fr}}
+
+    .xpBox{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:18px;
+      padding:12px;
+      background:rgba(10,14,26,.35);
+      display:flex;flex-direction:column;gap:10px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .xpTop{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .xpTitle{font-size:12px;color:var(--muted)}
+    .xpValue{font-family:var(--mono);font-size:16px;font-weight:850}
+    .bar{
+      height:10px;border-radius:999px;border:1px solid rgba(38,52,84,.85);
+      background:rgba(6,8,18,.35); overflow:hidden;
+    }
+    .bar > div{
+      height:100%; width:0%;
+      background: linear-gradient(90deg, rgba(106,167,255,.95), rgba(77,224,214,.85), rgba(53,208,127,.85));
+      transition: width .25s ease;
+    }
+
+    .calendarShell{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(10,14,26,.35);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .calTop{
+      padding:12px;
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      border-bottom:1px solid rgba(38,52,84,.6);
+      background:rgba(14,18,30,.55);
+      backdrop-filter: blur(10px);
+    }
+    .calGrid{
+      display:grid;
+      grid-template-columns: repeat(7, minmax(0,1fr));
+      gap:8px;
+      padding:12px;
+    }
+    .calDow{
+      font-size:11px;color:var(--muted);
+      padding:6px 8px;border-radius:10px;
+      background:rgba(6,8,18,.25);
+      border:1px solid rgba(38,52,84,.55);
+      text-align:center;
+    }
+    .dayCell{
+      border:1px solid rgba(38,52,84,.75);
+      background:rgba(6,8,18,.25);
+      border-radius:14px;
+      min-height:112px;
+      padding:10px;
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transition:border-color .15s ease, box-shadow .15s ease, transform .10s ease;
+    }
+    .dayCell:hover{transform:translateY(-1px);border-color:rgba(106,167,255,.55);box-shadow:var(--glow)}
+    .dayNum{font-family:var(--mono);font-size:12px;color:var(--muted)}
+    .dayNum.today{color:var(--accent);font-weight:900}
+    .evt{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+    .evtChip{
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
+      font-size:11px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(38,52,84,.8);
+      background:rgba(10,14,26,.35);
+      color:var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .evtChip span{overflow:hidden;text-overflow:ellipsis}
+    .evtChip em{font-style:normal;color:var(--muted);font-family:var(--mono)}
+    .dayGhost{opacity:.35}
+
+    .chatDock{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(10,14,26,.35);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .chatTop{
+      padding:12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid rgba(38,52,84,.6);
+      background:rgba(14,18,30,.55);
+      backdrop-filter: blur(10px);
+    }
+    .chatTitle{display:flex;flex-direction:column;gap:2px}
+    .chatTitle strong{font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+    .chatTitle span{font-size:12px;color:var(--muted)}
+    .chatBody{
+      max-height:340px;
+      overflow:auto;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .msg{
+      max-width:92%;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(38,52,84,.8);
+      background:rgba(6,8,18,.25);
+      line-height:1.35;
+      font-size:13px;
+      white-space:pre-wrap;
+    }
+    .msg.you{align-self:flex-end;border-color:rgba(106,167,255,.55);background:rgba(106,167,255,.12);box-shadow:var(--glow)}
+    .msg.bot{align-self:flex-start;border-color:rgba(77,224,214,.45);background:rgba(77,224,214,.10);box-shadow:var(--glow2)}
+    .chatInput{
+      padding:12px;
+      display:flex;
+      gap:8px;
+      border-top:1px solid rgba(38,52,84,.6);
+      background:rgba(14,18,30,.40);
+    }
+    .chatInput input{flex:1}
+    .quickRow{
+      padding:0 12px 12px;
+      display:flex;gap:8px;flex-wrap:wrap;
+    }
+
+    dialog{
+      border:1px solid rgba(38,52,84,.9);
+      border-radius:18px;
+      background:rgba(6,8,18,.94);
+      color:var(--text);
+      box-shadow:var(--shadow);
+      max-width:960px;
+      width:calc(100% - 24px);
+    }
+    dialog::backdrop{background:rgba(0,0,0,.65)}
+    .modal-hd{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(38,52,84,.6);
+      background:rgba(14,18,30,.55);
+      backdrop-filter: blur(10px);
+    }
+    .modal-hd h3{margin:0;font-size:13px;letter-spacing:.5px;text-transform:uppercase}
+    .modal-bd{padding:14px}
+    .codebox{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(38,52,84,.9);
+      background:rgba(6,8,18,.55);
+      overflow:auto;
+      white-space:pre;
+      max-height:380px;
+    }
+
+    .toastWrap{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:9999;
+      pointer-events:none;
+    }
+    .toast{
+      pointer-events:auto;
+      border:1px solid rgba(38,52,84,.9);
+      background:rgba(10,14,26,.82);
+      border-radius:16px;
+      padding:10px 12px;
+      min-width:280px;
+      max-width:420px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .toast .t{font-size:12px;color:var(--muted);margin-top:4px}
+    .toast .row{justify-content:space-between}
+    .toast .x{cursor:pointer}
+
+    .confettiWrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9998}
+    .confetti{
+      position:absolute;width:10px;height:16px;opacity:.95;border-radius:2px;
+      transform:translateY(-20px) rotate(0deg);
+      animation: fall 900ms linear forwards;
+    }
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none !important; animation:none !important}
+      .slot:hover{transform:none}
+      .dayCell:hover{transform:none}
+      .tab:active{transform:none}
+      .btn:active{transform:none}
+    }
+
+    @media print{
+      body{background:#fff;color:#000}
+      .btn,.tabs,.top-actions,.planner-top .right,.no-print,.confettiWrap,.toastWrap{display:none !important}
+      .card{box-shadow:none}
+      .card,.planner,.timer,.xpBox,.calendarShell,.chatDock{border:1px solid #bbb}
+      input,select,textarea{border:1px solid #bbb;background:#fff;color:#000}
+      th{position:static}
+    }
+  </style>
+</head>
+<body>
+  <div class="confettiWrap" id="confettiWrap"></div>
+  <div class="toastWrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Study Planner</h1>
+        <p>One file. Auto-saves locally. Works for IB DP + Lebanese Baccalaureate + French Baccalauréat. “AI Coach” can run offline (smart planner agent) or connect to a Chat Completions API endpoint.</p>
+      </div>
+      <div class="top-actions">
+        <label class="switch" title="XP + streaks + confetti + quest labels">
+          <input type="checkbox" id="gamifyToggle"/>
+          Gamified mode
+        </label>
+        <label class="switch" title="When linked, focus timer uses the block’s minutes">
+          <input type="checkbox" id="blockTimerToggle"/>
+          Block timer
+        </label>
+        <button class="btn primary" id="btnNewWeek">New week</button>
+        <button class="btn" id="btnSettings">Settings</button>
+        <button class="btn" id="btnExport">Export</button>
+        <button class="btn" id="btnImport">Import</button>
+        <button class="btn" id="btnPrint">Print</button>
+        <button class="btn danger" id="btnReset">Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="hd">
+          <h2>Dashboard</h2>
+          <div class="row tight">
+            <span class="pill" id="weekLabel">Week: —</span>
+            <span class="pill" id="todayLabel">Today: —</span>
+          </div>
+        </div>
+
+        <div class="bd">
+          <div class="split">
+            <div class="field">
+              <label>Student name (optional)</label>
+              <input id="studentName" placeholder="Your name"/>
+            </div>
+            <div class="field">
+              <label>Curriculum</label>
+              <select id="curriculum">
+                <option value="IB">IB Diploma Programme</option>
+                <option value="LB">Lebanese Baccalaureate</option>
+                <option value="FR">French Baccalauréat</option>
+                <option value="CUSTOM">Custom</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="split" style="margin-top:10px">
+            <div class="field">
+              <label>Track / Branch / Specialities</label>
+              <select id="track"></select>
+            </div>
+            <div class="field">
+              <label>Week starting (Monday)</label>
+              <input id="weekStart" type="date"/>
+            </div>
+          </div>
+
+          <div class="split" style="margin-top:10px">
+            <div class="field">
+              <label>Target study hours</label>
+              <input id="targetHours" type="number" min="0" step="0.5" placeholder="e.g., 14"/>
+            </div>
+            <div class="field">
+              <label>Auto-scheduler style</label>
+              <select id="schedulerStyle">
+                <option value="balanced">Balanced</option>
+                <option value="deadline">Deadline-heavy</option>
+                <option value="hlheavy">Core/major-heavy</option>
+                <option value="light">Light (more breaks)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="stat" style="margin-top:12px">
+            <div class="kpi"><div class="n" id="kpiPlanned">0.0h</div><div class="t">Planned</div></div>
+            <div class="kpi"><div class="n" id="kpiDone">0.0h</div><div class="t">Completed</div></div>
+            <div class="kpi"><div class="n" id="kpiTasks">0</div><div class="t">Open tasks</div></div>
+            <div class="kpi"><div class="n" id="kpiDue">0</div><div class="t">Due ≤ 7 days</div></div>
+          </div>
+
+          <div id="xpArea" style="margin-top:12px; display:none">
+            <div class="xpBox">
+              <div class="xpTop">
+                <div>
+                  <div class="xpTitle">XP / Level</div>
+                  <div class="xpValue" id="xpLine">Lv 1 · 0 XP</div>
+                </div>
+                <div class="row tight">
+                  <span class="pill" id="streakPill">Streak: 0</span>
+                  <span class="pill" id="questsPill">Quests today: 0</span>
+                </div>
+              </div>
+              <div class="bar"><div id="xpBar"></div></div>
+              <div class="row tight">
+                <span class="badge r">Red = Boss Fight (x1.5 XP)</span>
+                <span class="badge y">Yellow = Skill Run (x1.2 XP)</span>
+                <span class="badge g">Green = Easy Win (x1.0 XP)</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="split">
+            <div class="field">
+              <label>Weekly priorities (top 5)</label>
+              <textarea id="weeklyPriorities" placeholder="List your top priorities for this week."></textarea>
+            </div>
+            <div class="field">
+              <label>Reflection</label>
+              <textarea id="weeklyReflection" placeholder="What worked / what didn’t / what to change next week."></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="timer">
+            <div class="timer-top">
+              <div>
+                <div class="timer-face" id="timerDisplay">25:00</div>
+                <div class="timer-mini" id="timerModeLabel">Mode: Focus</div>
+              </div>
+              <div class="timer-controls">
+                <button class="btn good" id="timerStart">▶ Start</button>
+                <button class="btn" id="timerPause">⏸ Pause</button>
+                <button class="btn" id="timerReset">↺ Reset</button>
+              </div>
+            </div>
+
+            <div class="timer-grid">
+              <div class="field">
+                <label>Focus minutes</label>
+                <input id="focusMin" type="number" min="5" step="1" value="25"/>
+              </div>
+              <div class="field">
+                <label>Break minutes</label>
+                <input id="breakMin" type="number" min="1" step="1" value="5"/>
+              </div>
+            </div>
+
+            <div class="row tight">
+              <button class="btn primary" id="timerFocusBtn">Focus</button>
+              <button class="btn" id="timerBreakBtn">Break</button>
+              <span class="pill" id="timerLinkLabel">Not linked to a block</span>
+              <button class="btn ghost small" id="timerSyncBtn" title="Sync focus timer with linked block minutes">Sync</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="chatDock">
+            <div class="chatTop">
+              <div class="chatTitle">
+                <strong>AI Coach</strong>
+                <span id="aiModeLabel">Offline agent (local)</span>
+              </div>
+              <div class="row tight">
+                <button class="btn small" id="btnChatClear">Clear</button>
+              </div>
+            </div>
+
+            <div class="chatBody" id="chatBody"></div>
+
+            <div class="quickRow">
+              <button class="btn small primary" data-q="What should I do next?">Next</button>
+              <button class="btn small" data-q="Plan my week based on deadlines and my target hours">Plan week</button>
+              <button class="btn small" data-q="What is due soon?">Due soon</button>
+              <button class="btn small" data-q="Make me a 25-minute session for my hardest subject">Hardest 25m</button>
+            </div>
+
+            <div class="chatInput">
+              <input id="chatText" placeholder="Try: next • due soon • plan week • add task Physics due 2026-02-10 2h Paper 2 corrections • add event 2026-02-12 16:00 mock"/>
+              <button class="btn primary" id="chatSend">Send</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">
+          <h2>Views</h2>
+          <div class="tabs" id="tabs">
+            <div class="tab active" data-view="planner">Weekly Planner</div>
+            <div class="tab" data-view="tasks">Tasks</div>
+            <div class="tab" data-view="calendar">Calendar</div>
+            <div class="tab" data-view="subjects">Subjects</div>
+          </div>
+        </div>
+
+        <div class="bd views">
+          <section id="view-planner" class="active">
+            <div class="planner">
+              <div class="planner-top">
+                <div class="left">
+                  <span class="pill">Template</span>
+                  <select id="plannerTemplate" style="max-width:290px">
+                    <option value="balanced">Balanced (2 blocks weekdays)</option>
+                    <option value="heavy">Heavy (3 blocks weekdays)</option>
+                    <option value="light">Light (1 block weekdays)</option>
+                    <option value="weekendFocus">Weekend focus</option>
+                  </select>
+                  <button class="btn" id="btnApplyTemplate">Apply</button>
+                  <button class="btn primary" id="btnAutoSchedule">Auto-generate schedule</button>
+                  <button class="btn" id="btnClearWeek">Clear blocks</button>
+                </div>
+                <div class="right">
+                  <span class="pill">Click a block to link timer</span>
+                </div>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:130px">Day</th>
+                    <th>Block A</th>
+                    <th>Block B</th>
+                    <th>Block C</th>
+                  </tr>
+                </thead>
+                <tbody id="plannerBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="view-tasks">
+            <div class="row" style="margin-bottom:10px">
+              <div class="field">
+                <label>Task title</label>
+                <input id="taskTitle" placeholder="e.g., Physics: Paper 2 set + corrections"/>
+              </div>
+              <div class="field small">
+                <label>Type</label>
+                <select id="taskType"></select>
+              </div>
+              <div class="field small">
+                <label>Subject</label>
+                <select id="taskSubject"></select>
+              </div>
+              <div class="field tiny">
+                <label>Priority</label>
+                <select id="taskPriority">
+                  <option value="High">High</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </div>
+              <div class="field small">
+                <label>Due date</label>
+                <input id="taskDue" type="date"/>
+              </div>
+              <div class="field tiny">
+                <label>Est. hours</label>
+                <input id="taskHours" type="number" min="0" step="0.5" placeholder="1.5"/>
+              </div>
+              <div class="field tiny" style="align-self:flex-end">
+                <button class="btn good" id="btnAddTask" style="width:100%">Add</button>
+              </div>
+            </div>
+
+            <div class="row tight" style="margin-bottom:10px">
+              <div class="field">
+                <label>Filter</label>
+                <input id="taskFilter" placeholder="Search..."/>
+              </div>
+              <div class="field small">
+                <label>Show</label>
+                <select id="taskShow">
+                  <option value="open" selected>Open</option>
+                  <option value="all">All</option>
+                  <option value="done">Done</option>
+                </select>
+              </div>
+              <div class="field small">
+                <label>Sort</label>
+                <select id="taskSort">
+                  <option value="due">Due date</option>
+                  <option value="priority">Priority</option>
+                  <option value="subject">Subject</option>
+                  <option value="created">Newest</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="list" id="taskList"></div>
+          </section>
+
+          <section id="view-calendar">
+            <div class="calendarShell">
+              <div class="calTop">
+                <div class="row tight">
+                  <button class="btn" id="calPrev">←</button>
+                  <span class="pill" id="calLabel">—</span>
+                  <button class="btn" id="calNext">→</button>
+                  <button class="btn primary" id="calToday">Today</button>
+                </div>
+                <div class="row tight">
+                  <button class="btn good" id="calAdd">＋ Add event</button>
+                </div>
+              </div>
+              <div class="calGrid" id="calGrid"></div>
+            </div>
+
+            <div style="margin-top:12px" class="list" id="calAgenda"></div>
+          </section>
+
+          <section id="view-subjects">
+            <div class="row" style="margin-bottom:10px">
+              <div class="field">
+                <label>Subject name</label>
+                <input id="subjName" placeholder="Add or edit subjects freely"/>
+              </div>
+              <div class="field small">
+                <label>Level / Weight</label>
+                <select id="subjLevel">
+                  <option value="Major">Major</option>
+                  <option value="Standard">Standard</option>
+                  <option value="Core">Core</option>
+                </select>
+              </div>
+              <div class="field small">
+                <label>Color</label>
+                <select id="subjColor">
+                  <option value="blue">Blue</option>
+                  <option value="green">Green</option>
+                  <option value="yellow">Yellow</option>
+                  <option value="red">Red</option>
+                  <option value="purple">Purple</option>
+                  <option value="teal">Teal</option>
+                </select>
+              </div>
+              <div class="field tiny" style="align-self:flex-end">
+                <button class="btn good" id="btnAddSubject" style="width:100%">Add</button>
+              </div>
+            </div>
+
+            <div class="list" id="subjectList"></div>
+
+            <div class="no-print" style="margin-top:12px">
+              <div class="card" style="box-shadow:none">
+                <div class="hd"><h2>Curriculum presets</h2></div>
+                <div class="bd">
+                  <button class="btn" id="btnRestorePreset">Restore preset subjects for current curriculum</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <dialog id="dlgData">
+      <div class="modal-hd">
+        <h3 id="dlgDataTitle">Data</h3>
+        <button class="btn" id="btnCloseDlgData">Close</button>
+      </div>
+      <div class="modal-bd">
+        <div class="row tight" style="margin:10px 0">
+          <button class="btn primary" id="btnCopyExport">Copy export</button>
+          <button class="btn" id="btnDownloadExport">Download .json</button>
+        </div>
+        <div class="codebox" id="exportBox"></div>
+
+        <div style="margin-top:14px" class="row">
+          <div class="field">
+            <label>Paste JSON here to import (overwrites)</label>
+            <textarea id="importBox" placeholder="{ ... }"></textarea>
+          </div>
+        </div>
+        <div class="row tight">
+          <button class="btn good" id="btnDoImport">Import</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="dlgEvent">
+      <div class="modal-hd">
+        <h3 id="evtDlgTitle">Event</h3>
+        <button class="btn" id="evtDlgClose">Close</button>
+      </div>
+      <div class="modal-bd">
+        <div class="split">
+          <div class="field">
+            <label>Title</label>
+            <input id="evtTitle" placeholder="e.g., Chemistry mock / Arabic writing"/>
+          </div>
+          <div class="field">
+            <label>Subject (optional)</label>
+            <select id="evtSubject"></select>
+          </div>
+        </div>
+
+        <div class="split" style="margin-top:10px">
+          <div class="field">
+            <label>Date</label>
+            <input id="evtDate" type="date"/>
+          </div>
+          <div class="field">
+            <label>Time (optional)</label>
+            <input id="evtTime" type="time"/>
+          </div>
+        </div>
+
+        <div class="split" style="margin-top:10px">
+          <div class="field">
+            <label>Duration (minutes)</label>
+            <input id="evtDur" type="number" min="0" step="5" placeholder="60"/>
+          </div>
+          <div class="field">
+            <label>Notes</label>
+            <input id="evtNotes" placeholder="Short notes"/>
+          </div>
+        </div>
+
+        <div class="row tight" style="margin-top:12px">
+          <button class="btn good" id="evtSave">Save</button>
+          <button class="btn danger" id="evtDelete">Delete</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="dlgSettings">
+      <div class="modal-hd">
+        <h3>Settings</h3>
+        <button class="btn" id="btnCloseSettings">Close</button>
+      </div>
+      <div class="modal-bd">
+        <div class="split">
+          <div class="field">
+            <label>AI Coach mode</label>
+            <select id="aiMode">
+              <option value="OFFLINE">Offline agent (recommended)</option>
+              <option value="CONNECTED">Connected AI endpoint (advanced)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Language</label>
+            <select id="uiLang">
+              <option value="EN">English</option>
+              <option value="FR">Français</option>
+              <option value="AR">العربية</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="aiConnectedBox" style="margin-top:12px; display:none">
+          <div class="split">
+            <div class="field">
+              <label>API URL (Chat Completions style)</label>
+              <input id="aiUrl" placeholder="https://.../v1/chat/completions"/>
+            </div>
+            <div class="field">
+              <label>Model name (optional)</label>
+              <input id="aiModel" placeholder="e.g., gpt-4.1-mini / llama / etc"/>
+            </div>
+          </div>
+          <div class="split" style="margin-top:10px">
+            <div class="field">
+              <label>API Key (stored locally in your browser)</label>
+              <input id="aiKey" type="password" placeholder="Paste key here"/>
+            </div>
+            <div class="field">
+              <label>Safety</label>
+              <input value="Tip: don’t share keys. Use at your own risk." readonly/>
+            </div>
+          </div>
+          <div class="row tight" style="margin-top:10px">
+            <button class="btn primary" id="btnTestAI">Test connection</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="row">
+          <div class="field">
+            <label>Version</label>
+            <input value="Release 1.0 (single-file)" readonly/>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+  </div>
+
+  <script>
+    const LS_KEY = "study_planner_release_v1";
+
+    const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    const DOWS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+    const METHOD_BANK = {
+      sciences: ["Past paper timed","Questionbank drills","Marking + corrections","Active recall","Teach-back","Notes → 1-page sheet"],
+      languages: ["Writing practice","Vocab recall","Listening/reading drills","Text analysis","Timed production"],
+      humanities:["Essay plan / outline","Source analysis","Flashcards + blurting","Timed paragraph","Markscheme phrasing"],
+      projects:  ["Research / drafting","Planning + structure","Edit pass","Citations + bibliography","Quality check"]
+    };
+
+    const CURRICULA = {
+      IB: {
+        label:"IB Diploma Programme",
+        tracks: [
+          {
+            id:"IB_DEFAULT",
+            label:"Typical IB DP (you choose subjects)",
+            taskTypes:["Coursework","Past Papers","Revision","IA/Portfolio","TOK","EE","CAS","Admin"]
+          },
+          {
+            id:"IB_SCI",
+            label:"Science-heavy DP (HL sciences)",
+            taskTypes:["Past Papers","Revision","IA/Portfolio","Coursework","TOK","EE","CAS","Admin"]
+          }
+        ],
+        defaultSubjects: (trackId)=>[
+          {name:"Physics", level:"Major", color:"red"},
+          {name:"Chemistry", level:"Major", color:"green"},
+          {name:"Arabic B", level:"Major", color:"yellow"},
+          {name:"Math AA", level:"Standard", color:"purple"},
+          {name:"Digital Society", level:"Standard", color:"teal"},
+          {name:"English A", level:"Standard", color:"blue"},
+          {name:"TOK", level:"Core", color:"blue"},
+          {name:"Extended Essay", level:"Core", color:"green"},
+          {name:"CAS", level:"Core", color:"yellow"}
+        ]
+      },
+
+      LB: {
+        label:"Lebanese Baccalaureate",
+        tracks: [
+          { id:"LB_SG", label:"General Science(GS)/Sciences Generales(SG)", taskTypes:["Devoir surveillé","Exercices","Révision","Fiches","Sujet type","Oral","Admin"] },
+          { id:"LB_SV", label:"Life Science(LS)/Sciences de la Vie(SV)", taskTypes:["Devoir surveillé","Exercices","Révision","Fiches","Sujet type","Oral","Admin"] },
+          { id:"LB_SE", label:"Sociology&Economy/Sociologie&Économie(SE)", taskTypes:["Dissertation","Analyse de docs","Révision","Fiches","Sujet type","Oral","Admin"] },
+          { id:"LB_LH", label:"Literature&Humanities/Lettres&Humanités(LH)", taskTypes:["Dissertation","Commentaire","Révision","Fiches","Sujet type","Oral","Admin"] }
+        ],
+        defaultSubjects: (trackId)=>{
+          const common = [
+            {name:"Arabic", level:"Standard", color:"yellow"},
+            {name:"French", level:"Standard", color:"blue"},
+            {name:"English", level:"Standard", color:"teal"},
+            {name:"History/Geography", level:"Standard", color:"purple"}
+          ];
+          if(trackId==="LB_SG") return [
+            {name:"Mathematics", level:"Major", color:"purple"},
+            {name:"Physics", level:"Major", color:"red"},
+            {name:"Chemistry", level:"Major", color:"green"},
+            ...common
+          ];
+          if(trackId==="LB_SV") return [
+            {name:"Biology", level:"Major", color:"green"},
+            {name:"Chemistry", level:"Major", color:"yellow"},
+            {name:"Physics", level:"Standard", color:"red"},
+            {name:"Mathematics", level:"Standard", color:"purple"},
+            ...common
+          ];
+          if(trackId==="LB_SE") return [
+            {name:"Economics", level:"Major", color:"green"},
+            {name:"Sociology", level:"Major", color:"purple"},
+            {name:"Mathematics", level:"Standard", color:"yellow"},
+            ...common
+          ];
+          return [
+            {name:"Arabic", level:"Major", color:"yellow"},
+            {name:"French", level:"Major", color:"blue"},
+            {name:"Philosophy", level:"Major", color:"purple"},
+            {name:"History/Geography", level:"Standard", color:"teal"},
+            {name:"English", level:"Standard", color:"green"}
+          ];
+        }
+      },
+
+      FR: {
+        label:"French Baccalauréat",
+        tracks: [
+          { id:"FR_MPC", label:"Spécialités: Maths + Physique-Chimie", taskTypes:["DS","Exercices","Révision","Fiches","Sujet type","Oral","Admin"] },
+          { id:"FR_MSVT", label:"Spécialités: Maths + SVT", taskTypes:["DS","Exercices","Révision","Fiches","Sujet type","Oral","Admin"] },
+          { id:"FR_SES", label:"Spécialités: SES + HGGSP", taskTypes:["Dissertation","Analyse de docs","Révision","Fiches","Sujet type","Oral","Admin"] },
+          { id:"FR_NSI", label:"Spécialités: Maths + NSI", taskTypes:["DS","Exercices","Projets","Révision","Sujet type","Oral","Admin"] }
+        ],
+        defaultSubjects: (trackId)=>{
+          const common = [
+            {name:"French (Tronc commun)", level:"Standard", color:"blue"},
+            {name:"Philosophy", level:"Standard", color:"purple"},
+            {name:"History-Geography", level:"Standard", color:"teal"},
+            {name:"English (LV)", level:"Standard", color:"yellow"}
+          ];
+          if(trackId==="FR_MPC") return [
+            {name:"Maths (Spé)", level:"Major", color:"purple"},
+            {name:"Physique-Chimie (Spé)", level:"Major", color:"red"},
+            ...common
+          ];
+          if(trackId==="FR_MSVT") return [
+            {name:"Maths (Spé)", level:"Major", color:"purple"},
+            {name:"SVT (Spé)", level:"Major", color:"green"},
+            ...common
+          ];
+          if(trackId==="FR_SES") return [
+            {name:"SES (Spé)", level:"Major", color:"green"},
+            {name:"HGGSP (Spé)", level:"Major", color:"red"},
+            ...common
+          ];
+          return [
+            {name:"Maths (Spé)", level:"Major", color:"purple"},
+            {name:"NSI (Spé)", level:"Major", color:"teal"},
+            ...common
+          ];
+        }
+      },
+
+      CUSTOM: {
+        label:"Custom",
+        tracks: [{ id:"CUSTOM", label:"Custom", taskTypes:["Task","Revision","Past Papers","Coursework","Admin"] }],
+        defaultSubjects: ()=>[]
+      }
+    };
+
+    const COLOR_MAP = {
+      blue:"#6aa7ff", green:"#35d07f", yellow:"#ffce5c", red:"#ff6a6a", purple:"#b78bff", teal:"#4de0d6"
+    };
+
+    function $(id){ return document.getElementById(id); }
+    function uid(){ return Math.random().toString(16).slice(2) + "-" + Date.now().toString(16); }
+    function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+    function toISODate(d){
+      const y=d.getFullYear();
+      const m=String(d.getMonth()+1).padStart(2,"0");
+      const da=String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${da}`;
+    }
+    function parseISO(iso){
+      const [y,m,d]=(iso||"").split("-").map(Number);
+      return new Date(y||1970,(m||1)-1,d||1);
+    }
+    function mondayOf(date){
+      const d=new Date(date);
+      const day=d.getDay();
+      const diff=(day===0?-6:1-day);
+      d.setDate(d.getDate()+diff);
+      d.setHours(0,0,0,0);
+      return d;
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function daysUntil(iso){
+      if(!iso) return Infinity;
+      const today=new Date(); today.setHours(0,0,0,0);
+      const d=parseISO(iso); d.setHours(0,0,0,0);
+      return Math.round((d-today)/(1000*60*60*24));
+    }
+
+    function toast(title, text){
+      const wrap=$("toastWrap");
+      const div=document.createElement("div");
+      div.className="toast";
+      div.innerHTML = `
+        <div class="row tight">
+          <div style="font-weight:750">${escapeHtml(title)}</div>
+          <div class="x" aria-label="Close" title="Close">✕</div>
+        </div>
+        ${text ? `<div class="t">${escapeHtml(text)}</div>` : ``}
+      `;
+      wrap.appendChild(div);
+      const close=()=>{ div.remove(); };
+      div.querySelector(".x").addEventListener("click", close);
+      setTimeout(close, 4200);
+    }
+
+    function beep(){
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type="sine";
+        o.frequency.value=880;
+        g.gain.value=0.04;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        setTimeout(()=>{ o.stop(); ctx.close(); }, 160);
+      }catch{}
+    }
+
+    function confettiBurst(){
+      const wrap=$("confettiWrap");
+      wrap.innerHTML="";
+      const colors=["#ff6a6a","#ffce5c","#35d07f","#6aa7ff","#b78bff","#4de0d6"];
+      const count=85;
+      const w=window.innerWidth;
+      for(let i=0;i<count;i++){
+        const c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=`${Math.random()*w}px`;
+        c.style.top="-20px";
+        c.style.width=`${6+Math.random()*10}px`;
+        c.style.height=`${10+Math.random()*14}px`;
+        c.style.background=colors[(Math.random()*colors.length)|0];
+        c.style.animationDuration=`${700+Math.random()*700}ms`;
+        c.style.animationDelay=`${Math.random()*120}ms`;
+        wrap.appendChild(c);
+      }
+      setTimeout(()=>{ wrap.innerHTML=""; }, 1700);
+    }
+
+    function defaultPlanner(){
+      const planner={};
+      for(let i=0;i<7;i++){
+        planner[String(i)] = [
+          {subjectId:"", focus:"", minutes:70, method:"", diff: i===0? "Red":"Yellow", done:false, xpAwarded:false},
+          {subjectId:"", focus:"", minutes:60, method:"", diff:"Yellow", done:false, xpAwarded:false},
+          {subjectId:"", focus:"", minutes:45, method:"", diff:"Green", done:false, xpAwarded:false}
+        ];
+      }
+      return planner;
+    }
+
+    function defaultState(){
+      const wk = mondayOf(new Date());
+      const today = new Date();
+      return {
+        studentName:"",
+        curriculum:"IB",
+        track:"IB_DEFAULT",
+        weekStart: toISODate(wk),
+        targetHours: 12,
+        schedulerStyle:"balanced",
+        weeklyPriorities:"",
+        weeklyReflection:"",
+        subjects: [],
+        tasks: [],
+        planner: defaultPlanner(),
+        timer: {
+          mode:"focus",
+          focusMin:25,
+          breakMin:5,
+          remainingSec:25*60,
+          running:false,
+          linkedBlock:"",
+          useBlockMinutes:true
+        },
+        gamify: {
+          enabled:true,
+          xpTotal:0,
+          streak:0,
+          lastStreakDate:""
+        },
+        calendar:{
+          viewYear: today.getFullYear(),
+          viewMonth: today.getMonth(),
+          selectedDate: toISODate(today),
+          events:[]
+        },
+        settings:{
+          aiMode:"OFFLINE",
+          aiUrl:"",
+          aiKey:"",
+          aiModel:"",
+          uiLang:"EN"
+        },
+        chat:{
+          messages:[
+            {id:uid(), who:"bot", text:"AI Coach ready. Try: next • due soon • plan week • add task <subject> due YYYY-MM-DD <hours> <title> • add event YYYY-MM-DD HH:MM <title>."}
+          ]
+        }
+      };
+    }
+
+    function load(){
+      try{
+        const raw=localStorage.getItem(LS_KEY);
+        if(!raw) return defaultState();
+        const parsed=JSON.parse(raw);
+        const base=defaultState();
+        const s=Object.assign(base, parsed);
+
+        if(!s.planner || typeof s.planner!=="object") s.planner = defaultPlanner();
+        for(let d=0; d<7; d++){
+          const row=s.planner[String(d)];
+          if(!Array.isArray(row) || row.length!==3) s.planner[String(d)] = defaultPlanner()[String(d)];
+          for(let i=0;i<3;i++){
+            const b=s.planner[String(d)][i];
+            s.planner[String(d)][i] = Object.assign(
+              {subjectId:"", focus:"", minutes:0, method:"", diff:"Green", done:false, xpAwarded:false},
+              b || {}
+            );
+          }
+        }
+        if(!Array.isArray(s.tasks)) s.tasks=[];
+        if(!s.timer) s.timer=base.timer;
+        if(!s.gamify) s.gamify=base.gamify;
+        if(!s.calendar) s.calendar=base.calendar;
+        if(!Array.isArray(s.calendar.events)) s.calendar.events=[];
+        if(!s.settings) s.settings=base.settings;
+        if(!s.chat) s.chat=base.chat;
+        if(!Array.isArray(s.chat.messages)) s.chat.messages=base.chat.messages;
+        return s;
+      }catch{
+        return defaultState();
+      }
+    }
+
+    function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+    const state = load();
+
+    function subjectWeight(level){
+      if(level==="Major") return 3;
+      if(level==="Standard") return 2;
+      return 1;
+    }
+    function priorityScore(p){ return p==="High"?3:(p==="Medium"?2:1); }
+    function badgeForPriority(p){ return p==="High"?"bad":(p==="Medium"?"warn":"good"); }
+
+    function diffMultiplier(diff){
+      if(diff==="Red") return 1.5;
+      if(diff==="Yellow") return 1.2;
+      return 1.0;
+    }
+    function questName(diff){
+      if(diff==="Red") return "Boss Fight";
+      if(diff==="Yellow") return "Skill Run";
+      return "Easy Win";
+    }
+    function diffBadgeClass(diff){
+      if(diff==="Red") return "r";
+      if(diff==="Yellow") return "y";
+      return "g";
+    }
+    function calcBlockXP(block){
+      const mins = Math.max(0, Number(block.minutes||0));
+      const base = mins/5;
+      return Math.max(0, Math.round(base * diffMultiplier(block.diff||"Green")));
+    }
+
+    function buildTrackOptions(){
+      const cur = state.curriculum;
+      const trackSel = $("track");
+      trackSel.innerHTML="";
+      const tracks = CURRICULA[cur].tracks || [];
+      for(const t of tracks){
+        const o=document.createElement("option");
+        o.value=t.id;
+        o.textContent=t.label;
+        trackSel.appendChild(o);
+      }
+      if(!tracks.some(t=>t.id===state.track)) state.track = tracks[0]?.id || "CUSTOM";
+      trackSel.value = state.track;
+    }
+
+    function restorePresetSubjects(){
+      const cur = state.curriculum;
+      const track = state.track;
+      const preset = CURRICULA[cur].defaultSubjects(track) || [];
+      state.subjects = preset.map(s=>({id:uid(), name:s.name, level:s.level, color:s.color}));
+      save();
+      renderSubjects();
+      renderTaskSubjectOptions();
+      renderEventSubjectOptions();
+      renderPlanner();
+      renderTasks();
+      renderKPIs();
+      toast("Preset restored", "Subjects updated from curriculum preset.");
+    }
+
+    function taskTypesForCurrent(){
+      const cur=state.curriculum;
+      const tr=CURRICULA[cur].tracks.find(x=>x.id===state.track) || CURRICULA[cur].tracks[0];
+      return (tr && tr.taskTypes) ? tr.taskTypes : ["Task","Revision","Admin"];
+    }
+
+    function renderTaskTypeOptions(){
+      const sel=$("taskType");
+      sel.innerHTML="";
+      for(const t of taskTypesForCurrent()){
+        const o=document.createElement("option");
+        o.value=t;
+        o.textContent=t;
+        sel.appendChild(o);
+      }
+    }
+
+    function getSubjectMap(){
+      const map={};
+      for(const s of state.subjects) map[s.id]=s;
+      return map;
+    }
+
+    function colorDot(color){ return COLOR_MAP[color] || COLOR_MAP.blue; }
+
+    function renderHeader(){
+      const ws = parseISO(state.weekStart);
+      const we = new Date(ws); we.setDate(we.getDate()+6);
+      $("weekLabel").textContent = `Week: ${toISODate(ws)} → ${toISODate(we)}`;
+      $("todayLabel").textContent = `Today: ${toISODate(new Date())}`;
+    }
+
+    function renderKPIs(){
+      let planned=0, done=0;
+      for(let d=0; d<7; d++){
+        for(const b of state.planner[String(d)]){
+          planned += (b.minutes||0);
+          if(b.done) done += (b.minutes||0);
+        }
+      }
+      $("kpiPlanned").textContent = `${(planned/60).toFixed(1)}h`;
+      $("kpiDone").textContent = `${(done/60).toFixed(1)}h`;
+      $("kpiTasks").textContent = String(state.tasks.filter(t=>!t.done).length);
+      $("kpiDue").textContent = String(state.tasks.filter(t=>!t.done && daysUntil(t.dueDate)<=7).length);
+    }
+
+    function questsDoneToday(){
+      const todayIso = toISODate(new Date());
+      const ws=parseISO(state.weekStart);
+      const we=new Date(ws); we.setDate(we.getDate()+6);
+      const d=parseISO(todayIso);
+      ws.setHours(0,0,0,0); we.setHours(0,0,0,0); d.setHours(0,0,0,0);
+      if(d<ws || d>we) return 0;
+      const idx=Math.round((d-ws)/(1000*60*60*24));
+      const row=state.planner[String(idx)]||[];
+      return row.filter(b=>b && b.done).length;
+    }
+
+    function updateStreakIfNeeded(){
+      if(!state.gamify.enabled) return;
+      const today = toISODate(new Date());
+      if(state.gamify.lastStreakDate===today) return;
+      if(questsDoneToday()<=0) return;
+      if(!state.gamify.lastStreakDate){
+        state.gamify.streak=1;
+        state.gamify.lastStreakDate=today;
+        return;
+      }
+      const last=parseISO(state.gamify.lastStreakDate);
+      const t=parseISO(today);
+      last.setHours(0,0,0,0); t.setHours(0,0,0,0);
+      const diff=Math.round((t-last)/(1000*60*60*24));
+      if(diff===1) state.gamify.streak += 1;
+      else if(diff>1) state.gamify.streak = 1;
+      state.gamify.lastStreakDate = today;
+    }
+
+    function awardXP(block){
+      if(!state.gamify.enabled) return 0;
+      const xp=calcBlockXP(block);
+      state.gamify.xpTotal += xp;
+      return xp;
+    }
+    function revokeXP(block){
+      if(!state.gamify.enabled) return 0;
+      const xp=calcBlockXP(block);
+      state.gamify.xpTotal = Math.max(0, state.gamify.xpTotal - xp);
+      return xp;
+    }
+
+    function renderGamify(){
+      $("gamifyToggle").checked = !!state.gamify.enabled;
+      $("xpArea").style.display = state.gamify.enabled ? "block" : "none";
+      if(!state.gamify.enabled) return;
+
+      const xp = Math.max(0, state.gamify.xpTotal|0);
+      const level = Math.floor(xp/500)+1;
+      const inLevel = xp%500;
+      const pct = Math.round((inLevel/500)*100);
+
+      $("xpLine").textContent = `Lv ${level} · ${xp} XP`;
+      $("xpBar").style.width = `${pct}%`;
+      $("streakPill").textContent = `Streak: ${state.gamify.streak||0}`;
+      $("questsPill").textContent = `Quests today: ${questsDoneToday()}`;
+    }
+
+    function dateForDay(dayIndex){
+      const ws=parseISO(state.weekStart);
+      const d=new Date(ws); d.setDate(d.getDate()+dayIndex);
+      return toISODate(d);
+    }
+
+    function chooseMethodForSubject(subjName){
+      const s=(subjName||"").toLowerCase();
+      if(s.includes("physics") || s.includes("chim") || s.includes("chem") || s.includes("svt") || s.includes("bio")) return METHOD_BANK.sciences;
+      if(s.includes("math") || s.includes("nsi")) return ["Questionbank drills","Past paper timed","Marking + corrections","Teach-back","Notes → 1-page sheet"];
+      if(s.includes("arab") || s.includes("french") || s.includes("english") || s.includes("lv")) return METHOD_BANK.languages;
+      if(s.includes("history") || s.includes("geo") || s.includes("hggsp") || s.includes("ses") || s.includes("philo") || s.includes("socio") || s.includes("econom")) return METHOD_BANK.humanities;
+      if(s.includes("tok") || s.includes("ee") || s.includes("extended") || s.includes("ia") || s.includes("portfolio") || s.includes("coursework") || s.includes("cas")) return METHOD_BANK.projects;
+      return ["Active recall","Questionbank drills","Teach-back","Notes → 1-page sheet"];
+    }
+
+    function defaultFocusFor(subjName, method){
+      const m=(method||"").toLowerCase();
+      if(m.includes("past paper")) return "Timed questions → mark after";
+      if(m.includes("questionbank") || m.includes("exerc")) return "Target weak topic drills";
+      if(m.includes("marking") || m.includes("correction")) return "Fix mistakes + redo worst ones";
+      if(m.includes("writing")) return "1 timed production + self-check";
+      if(m.includes("essay") || m.includes("dissertation")) return "Plan + 2 strong arguments + intro";
+      if(m.includes("source")) return "Analyse 2 docs + outline response";
+      if(m.includes("research") || m.includes("draft")) return "Small concrete progress (sources/words)";
+      if(m.includes("vocab")) return "20–40 words + active recall";
+      return "Active recall + quick test";
+    }
+
+    function isLinked(slotKey){ return state.timer.linkedBlock===slotKey; }
+
+    function subjectSelectHTML(value, id){
+      const opts = ['<option value="">—</option>']
+        .concat(state.subjects.map(s=>`<option value="${s.id}" ${s.id===value?"selected":""}>${escapeHtml(s.name)} (${escapeHtml(s.level)})</option>`))
+        .join("");
+      return `<select data-k="subjectId" data-b="${id}">${opts}</select>`;
+    }
+
+    function methodSelectHTML(value, subjName, id){
+      const methods=chooseMethodForSubject(subjName);
+      const v=value && value.trim()? value : methods[0];
+      const opts = methods.map(m=>`<option value="${escapeHtml(m)}" ${m===v?"selected":""}>${escapeHtml(m)}</option>`).join("");
+      return `<select data-k="method" data-b="${id}">${opts}</select>`;
+    }
+
+    function diffSelectHTML(value, id){
+      const vals=["Red","Yellow","Green"];
+      const v = vals.includes(value) ? value : "Green";
+      const opts=vals.map(x=>`<option value="${x}" ${x===v?"selected":""}>${x}</option>`).join("");
+      return `<select data-k="diff" data-b="${id}">${opts}</select>`;
+    }
+
+    function plannerRow(dayIndex){
+      const blocks=state.planner[String(dayIndex)];
+      const map=getSubjectMap();
+
+      function blockHTML(b, slotKey, dayIndex, slotIndex){
+        const linkedClass=isLinked(slotKey)?"linked":"";
+        const diff=(b && b.diff) ? b.diff : (slotIndex===0?"Red":(slotIndex===1?"Yellow":"Green"));
+
+        if(!b || b.minutes===0){
+          return `<div class="slot ${linkedClass}" data-slot="${slotKey}" data-diff="${diff}">
+            <div class="slot-footer">
+              <span>Off</span>
+              <div class="row tight">
+                <button class="btn small primary" data-act="linkTimer" data-slot="${slotKey}">Link</button>
+              </div>
+            </div>
+          </div>`;
+        }
+
+        const subj=map[b.subjectId];
+        const subjName=subj?subj.name:"—";
+        const badgeClass=diffBadgeClass(diff);
+        const xp=state.gamify.enabled ? calcBlockXP(b) : 0;
+        const quest = state.gamify.enabled
+          ? `<span class="questTag">${questName(diff)}</span> <span class="badge ${badgeClass}">${diff}</span> ${xp>0?`<span class="badge">+${xp} XP</span>`:""}`
+          : `<span class="badge ${badgeClass}">${diff}</span>`;
+
+        const linkBtn = isLinked(slotKey)
+          ? `<button class="btn small" data-act="unlinkTimer" data-slot="${slotKey}">Unlink</button>`
+          : `<button class="btn small primary" data-act="linkTimer" data-slot="${slotKey}">Link</button>`;
+
+        return `<div class="slot ${linkedClass}" data-slot="${slotKey}" data-diff="${diff}">
+          <div class="slot-row">
+            <div class="tiny">${subjectSelectHTML(b.subjectId, slotKey)}</div>
+            <div class="tiny2"><input data-k="minutes" data-b="${slotKey}" type="number" min="10" step="5" value="${b.minutes}"/></div>
+            <div class="tiny3">${methodSelectHTML(b.method, subjName, slotKey)}</div>
+            <div class="tiny4">${diffSelectHTML(diff, slotKey)}</div>
+          </div>
+          <div class="slot-row">
+            <input data-k="focus" data-b="${slotKey}" value="${escapeHtml(b.focus||"")}" placeholder="Session objective"/>
+          </div>
+          <div class="slot-footer">
+            <span>${quest} · ${escapeHtml(subjName)}</span>
+            <div class="row tight">
+              ${linkBtn}
+              <button class="btn small good" data-act="startBlock" data-slot="${slotKey}">Start</button>
+              <label class="check">
+                <input data-k="done" data-b="${slotKey}" type="checkbox" ${b.done?"checked":""}/>
+                Done
+              </label>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      const aKey=`${dayIndex}-0`;
+      const bKey=`${dayIndex}-1`;
+      const cKey=`${dayIndex}-2`;
+
+      return `
+        <tr>
+          <td style="white-space:nowrap">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-weight:850">${DAYS[dayIndex]}</div>
+              <div style="font-size:12px;color:var(--muted)">${dateForDay(dayIndex)}</div>
+            </div>
+          </td>
+          <td>${blockHTML(blocks[0], aKey, dayIndex, 0)}</td>
+          <td>${blockHTML(blocks[1], bKey, dayIndex, 1)}</td>
+          <td>${blockHTML(blocks[2], cKey, dayIndex, 2)}</td>
+        </tr>
+      `;
+    }
+
+    function renderPlanner(){
+      const body=$("plannerBody");
+      body.innerHTML="";
+      for(let i=0;i<7;i++) body.insertAdjacentHTML("beforeend", plannerRow(i));
+
+      body.querySelectorAll("input[data-k], select[data-k]").forEach(inp=>{
+        inp.addEventListener("input", onPlannerChange);
+        inp.addEventListener("change", onPlannerChange);
+      });
+
+      body.querySelectorAll('button[data-act="linkTimer"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          linkTimerTo(btn.getAttribute("data-slot")||"");
+        });
+      });
+      body.querySelectorAll('button[data-act="unlinkTimer"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          const slot=btn.getAttribute("data-slot")||"";
+          if(state.timer.linkedBlock===slot){
+            state.timer.linkedBlock="";
+            save();
+            renderPlanner();
+            renderTimerUI();
+          }
+        });
+      });
+      body.querySelectorAll('button[data-act="startBlock"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          const slot=btn.getAttribute("data-slot")||"";
+          linkTimerTo(slot);
+          setTimerMode("focus", true);
+          syncTimerWithLinkedBlock(true);
+          startTimer();
+        });
+      });
+
+      body.querySelectorAll(".slot").forEach(slotEl=>{
+        slotEl.addEventListener("click", (e)=>{
+          const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+          if(tag==="input" || tag==="select" || tag==="button" || tag==="label") return;
+          const slot = slotEl.getAttribute("data-slot")||"";
+          if(slot) linkTimerTo(slot);
+        });
+      });
+    }
+
+    function onPlannerChange(e){
+      const k=e.target.getAttribute("data-k");
+      const key=e.target.getAttribute("data-b");
+      if(!k || !key) return;
+      const [d,i]=key.split("-").map(Number);
+      const b=state.planner[String(d)][i];
+
+      const map=getSubjectMap();
+
+      if(k==="minutes"){
+        const v=parseFloat(e.target.value);
+        b.minutes = isNaN(v) ? b.minutes : clamp(v,10,600);
+        if(state.timer.linkedBlock===key) syncTimerWithLinkedBlock(true);
+      }
+      if(k==="subjectId"){
+        b.subjectId = e.target.value || "";
+        const subj=map[b.subjectId];
+        const name=subj?subj.name:"";
+        const methods=chooseMethodForSubject(name);
+        if(!b.method || !methods.includes(b.method)) b.method = methods[0];
+        if(!b.focus || !b.focus.trim()) b.focus = defaultFocusFor(name, b.method);
+      }
+      if(k==="method"){
+        b.method = e.target.value || b.method;
+        const subj=map[b.subjectId];
+        const name=subj?subj.name:"";
+        if(!b.focus || !b.focus.trim()) b.focus = defaultFocusFor(name, b.method);
+      }
+      if(k==="focus"){
+        b.focus = e.target.value || "";
+      }
+      if(k==="diff"){
+        const v=e.target.value;
+        b.diff = (v==="Red"||v==="Yellow"||v==="Green") ? v : b.diff;
+      }
+      if(k==="done"){
+        const checked = e.target.checked;
+        if(checked && !b.done){
+          b.done=true;
+          if(state.gamify.enabled && !b.xpAwarded){
+            awardXP(b);
+            b.xpAwarded=true;
+            confettiBurst();
+          }
+        }else if(!checked && b.done){
+          b.done=false;
+          if(state.gamify.enabled && b.xpAwarded){
+            revokeXP(b);
+            b.xpAwarded=false;
+          }
+        }
+        updateStreakIfNeeded();
+      }
+
+      save();
+      renderKPIs();
+      renderGamify();
+      renderPlanner();
+    }
+
+    function applyTemplate(mode){
+      const setBlock=(d, idx, minutes)=>{
+        const b=state.planner[String(d)][idx];
+        b.minutes=minutes;
+        b.diff = idx===0 ? "Red" : (idx===1 ? "Yellow" : "Green");
+        if(!b.method) b.method="";
+        if(b.focus==null) b.focus="";
+        if(b.subjectId==null) b.subjectId="";
+        if(b.done==null) b.done=false;
+        if(b.xpAwarded==null) b.xpAwarded=false;
+      };
+
+      for(let d=0; d<7; d++){
+        const weekend=d>=5;
+        if(mode==="balanced"){
+          setBlock(d,0, weekend?90:70);
+          setBlock(d,1, weekend?75:60);
+          setBlock(d,2, weekend?60:0);
+        }else if(mode==="heavy"){
+          setBlock(d,0, weekend?110:80);
+          setBlock(d,1, weekend?90:70);
+          setBlock(d,2, weekend?70:55);
+        }else if(mode==="light"){
+          setBlock(d,0, weekend?75:50);
+          setBlock(d,1, 0);
+          setBlock(d,2, 0);
+        }else if(mode==="weekendFocus"){
+          setBlock(d,0, weekend?120:45);
+          setBlock(d,1, weekend?90:0);
+          setBlock(d,2, weekend?75:0);
+        }
+      }
+
+      for(let d=0; d<7; d++){
+        for(let i=0;i<3;i++){
+          const b=state.planner[String(d)][i];
+          if(b.minutes===0){
+            b.subjectId="";
+            b.focus="";
+            b.method="";
+            b.done=false;
+            b.xpAwarded=false;
+            b.diff = i===0 ? "Red" : (i===1 ? "Yellow" : "Green");
+          }
+        }
+      }
+    }
+
+    function buildStudyBacklog(){
+      const map=getSubjectMap();
+      const openTasks = state.tasks.filter(t=>!t.done);
+      const items = [];
+
+      for(const t of openTasks){
+        const due = t.dueDate ? daysUntil(t.dueDate) : 9999;
+        const pr = priorityScore(t.priority);
+        const subj = map[t.subjectId];
+        const w = subj ? subjectWeight(subj.level) : 2;
+        const est = Math.max(0.5, Number(t.estHours||0) || 0.5);
+        const urgency = due<=0 ? 30 : (due<=3 ? 20 : (due<=7 ? 12 : (due<=14 ? 6 : 2)));
+        const score = (urgency*pr) + (w*4) + (est>=3?2:0);
+
+        items.push({
+          kind:"task",
+          id:t.id,
+          title:t.title,
+          subjectId:t.subjectId,
+          score,
+          estHours:est,
+          dueDays:due,
+          type:t.type
+        });
+      }
+
+      const subjects = state.subjects.filter(s=>s.level!=="Core");
+      for(const s of subjects){
+        const w = subjectWeight(s.level);
+        items.push({
+          kind:"maintenance",
+          id:s.id,
+          title:`Maintain: ${s.name}`,
+          subjectId:s.id,
+          score: 4*w,
+          estHours:1.0,
+          dueDays:9999,
+          type:"Revision"
+        });
+      }
+
+      items.sort((a,b)=>b.score-a.score);
+      return items;
+    }
+
+    function pickSubjectRoundRobin(){
+      const subjects=state.subjects.slice();
+      if(subjects.length===0) return "";
+      const weights=[];
+      for(const s of subjects){
+        const w=subjectWeight(s.level);
+        for(let i=0;i<w;i++) weights.push(s.id);
+      }
+      return weights[(Math.random()*weights.length)|0] || subjects[0].id;
+    }
+
+    function autoGenerateSchedule(){
+      const map=getSubjectMap();
+      const backlog = buildStudyBacklog();
+      const style = state.schedulerStyle;
+
+      const ws=parseISO(state.weekStart);
+      const dayScores = [];
+      for(let d=0; d<7; d++){
+        const date=parseISO(dateForDay(d));
+        const base = (d<=4) ? 1.0 : 0.9;
+        const dayLoad = state.planner[String(d)].reduce((sum,b)=>sum+(b.minutes||0),0);
+        dayScores.push({d, base, dayLoad, date});
+      }
+
+      const tasks = state.tasks.filter(t=>!t.done);
+      tasks.sort((a,b)=> (a.dueDate||"9999-12-31").localeCompare(b.dueDate||"9999-12-31"));
+
+      for(let d=0; d<7; d++){
+        for(let i=0;i<3;i++){
+          const b=state.planner[String(d)][i];
+          if(!b || b.minutes===0) continue;
+          b.done=false;
+          b.xpAwarded=false;
+          b.subjectId="";
+          b.method="";
+          b.focus="";
+        }
+      }
+
+      const usedTaskIds = new Set();
+      const pushSession = (d, i, item)=>{
+        const b=state.planner[String(d)][i];
+        const subj=map[item.subjectId];
+        const name=subj?subj.name:"";
+        b.subjectId = item.subjectId || pickSubjectRoundRobin();
+        b.method = chooseMethodForSubject(name)[0];
+        b.focus = item.kind==="task"
+          ? `${item.title} (${item.type})`
+          : defaultFocusFor(name, b.method);
+      };
+
+      const daysOrder = [...Array(7).keys()];
+      const dayWeight = (d)=>{
+        if(style==="light") return d<=4 ? 1.0 : 0.8;
+        if(style==="hlheavy") return d<=4 ? 1.15 : 0.95;
+        if(style==="deadline") return d<=4 ? 1.2 : 1.0;
+        return d<=4 ? 1.1 : 0.95;
+      };
+
+      backlog.sort((a,b)=>{
+        let sa=a.score*dayWeight(2), sb=b.score*dayWeight(2);
+        if(style==="deadline"){
+          sa += (a.dueDays<=7?10:0);
+          sb += (b.dueDays<=7?10:0);
+        }
+        return sb-sa;
+      });
+
+      for(const item of backlog){
+        if(item.kind==="task" && usedTaskIds.has(item.id)) continue;
+
+        let best=null;
+        for(const d of daysOrder){
+          for(let i=0;i<3;i++){
+            const b=state.planner[String(d)][i];
+            if(!b || b.minutes===0) continue;
+            if(b.subjectId) continue;
+
+            const dateIso = dateForDay(d);
+            const toDue = item.dueDays;
+
+            let fit = 0;
+            if(style==="deadline"){
+              fit = (toDue<=0?30:(toDue<=3?20:(toDue<=7?12:(toDue<=14?6:2))));
+            }else if(style==="hlheavy"){
+              const subj = map[item.subjectId];
+              fit = subj ? subjectWeight(subj.level)*6 : 6;
+            }else{
+              fit = item.score;
+            }
+
+            fit += dayWeight(d)*5;
+            if(d>=5) fit -= 2;
+            if(i===0) fit += 2;
+
+            if(best==null || fit>best.fit) best={d,i,fit};
+          }
+        }
+
+        if(best){
+          pushSession(best.d, best.i, item);
+          if(item.kind==="task") usedTaskIds.add(item.id);
+        }
+      }
+
+      for(let d=0; d<7; d++){
+        for(let i=0;i<3;i++){
+          const b=state.planner[String(d)][i];
+          if(!b || b.minutes===0) continue;
+          if(!b.subjectId){
+            const sid = pickSubjectRoundRobin();
+            const subj = map[sid];
+            const name = subj?subj.name:"";
+            b.subjectId = sid;
+            b.method = chooseMethodForSubject(name)[0];
+            b.focus = defaultFocusFor(name, b.method);
+          }
+        }
+      }
+    }
+
+    function renderTaskSubjectOptions(){
+      const sel=$("taskSubject");
+      sel.innerHTML="";
+      const o0=document.createElement("option");
+      o0.value=""; o0.textContent="—";
+      sel.appendChild(o0);
+      for(const s of state.subjects){
+        const o=document.createElement("option");
+        o.value=s.id;
+        o.textContent=`${s.name} (${s.level})`;
+        sel.appendChild(o);
+      }
+    }
+
+    function renderEventSubjectOptions(){
+      const sel=$("evtSubject");
+      sel.innerHTML="";
+      const o0=document.createElement("option");
+      o0.value=""; o0.textContent="—";
+      sel.appendChild(o0);
+      for(const s of state.subjects){
+        const o=document.createElement("option");
+        o.value=s.id;
+        o.textContent=`${s.name} (${s.level})`;
+        sel.appendChild(o);
+      }
+    }
+
+    function renderSubjects(){
+      const list=$("subjectList");
+      list.innerHTML="";
+      const map=getSubjectMap();
+
+      for(const subj of state.subjects){
+        const div=document.createElement("div");
+        div.className="item";
+        const dot=colorDot(subj.color);
+        div.innerHTML = `
+          <div class="meta">
+            <div class="top">
+              <span class="badge" style="border-color:${dot}66;color:${dot};background:${dot}14">● ${escapeHtml(subj.level)}</span>
+              <span class="badge">${escapeHtml(subj.color)}</span>
+            </div>
+            <p class="title" title="${escapeHtml(subj.name)}">${escapeHtml(subj.name)}</p>
+            <p class="desc">Weight: ${subjectWeight(subj.level)} · Used for auto-scheduling</p>
+          </div>
+          <div class="actions">
+            <button class="btn" data-act="rename" data-id="${subj.id}">Rename</button>
+            <button class="btn" data-act="level" data-id="${subj.id}">Level</button>
+            <button class="btn" data-act="color" data-id="${subj.id}">Color</button>
+            <button class="btn danger" data-act="delete" data-id="${subj.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(div);
+      }
+
+      list.querySelectorAll("button[data-act]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const act=btn.getAttribute("data-act");
+          const id=btn.getAttribute("data-id");
+          const subj=map[id];
+          if(!subj) return;
+
+          if(act==="rename"){
+            const nv=prompt("New subject name:", subj.name);
+            if(nv && nv.trim()){
+              subj.name=nv.trim();
+              save();
+              renderSubjects();
+              renderTaskSubjectOptions();
+              renderEventSubjectOptions();
+              renderPlanner();
+              renderTasks();
+              renderCalendar();
+              renderAgenda();
+            }
+          }else if(act==="level"){
+            const nv=prompt("Level: Major / Standard / Core", subj.level);
+            if(!nv) return;
+            const v=nv.trim();
+            if(!["Major","Standard","Core"].includes(v)) return toast("Invalid", "Use Major, Standard, or Core.");
+            subj.level=v;
+            save();
+            renderSubjects();
+            renderTaskSubjectOptions();
+            renderEventSubjectOptions();
+            renderPlanner();
+            renderTasks();
+            renderKPIs();
+          }else if(act==="color"){
+            const nv=prompt("Color: blue, green, yellow, red, purple, teal", subj.color);
+            if(!nv) return;
+            const v=nv.trim().toLowerCase();
+            if(!COLOR_MAP[v]) return toast("Invalid", "Use: blue/green/yellow/red/purple/teal.");
+            subj.color=v;
+            save();
+            renderSubjects();
+            renderPlanner();
+            renderTasks();
+            renderCalendar();
+            renderAgenda();
+          }else if(act==="delete"){
+            if(!confirm("Delete this subject? Items using it will become blank.")) return;
+            for(const t of state.tasks) if(t.subjectId===id) t.subjectId="";
+            for(const e of state.calendar.events) if(e.subjectId===id) e.subjectId="";
+            for(let d=0; d<7; d++){
+              for(const b of state.planner[String(d)]) if(b.subjectId===id) b.subjectId="";
+            }
+            state.subjects = state.subjects.filter(s=>s.id!==id);
+            save();
+            renderSubjects();
+            renderTaskSubjectOptions();
+            renderEventSubjectOptions();
+            renderPlanner();
+            renderTasks();
+            renderCalendar();
+            renderAgenda();
+            renderKPIs();
+          }
+        });
+      });
+    }
+
+    function renderTasks(){
+      const list=$("taskList");
+      list.innerHTML="";
+      const map=getSubjectMap();
+      const q=($("taskFilter").value||"").toLowerCase().trim();
+      const show=$("taskShow").value;
+      const sort=$("taskSort").value;
+
+      let tasks=[...state.tasks];
+      tasks = tasks.filter(t=>{
+        if(show==="open") return !t.done;
+        if(show==="done") return t.done;
+        return true;
+      });
+
+      if(q){
+        tasks=tasks.filter(t=>{
+          const subj=map[t.subjectId]?.name || "";
+          return (t.title+" "+t.type+" "+subj).toLowerCase().includes(q);
+        });
+      }
+
+      tasks.sort((a,b)=>{
+        if(sort==="due"){
+          const da=a.dueDate||"9999-12-31";
+          const db=b.dueDate||"9999-12-31";
+          return da.localeCompare(db);
+        }
+        if(sort==="priority") return priorityScore(b.priority)-priorityScore(a.priority);
+        if(sort==="subject"){
+          const sa=(map[a.subjectId]?.name||"").toLowerCase();
+          const sb=(map[b.subjectId]?.name||"").toLowerCase();
+          return sa.localeCompare(sb);
+        }
+        return (b.createdAt||0)-(a.createdAt||0);
+      });
+
+      for(const t of tasks){
+        const subj=map[t.subjectId];
+        const subjLabel=subj?`${subj.name} (${subj.level})`:"—";
+        const du=daysUntil(t.dueDate);
+        let dueBadge="good", dueText="No date";
+        if(du!==Infinity){
+          if(du<0){dueText=`${Math.abs(du)}d overdue`; dueBadge="bad";}
+          else if(du===0){dueText="Due today"; dueBadge="bad";}
+          else if(du<=3){dueText=`Due in ${du}d`; dueBadge="warn";}
+          else dueText=`Due in ${du}d`;
+        }
+
+        const dot = subj ? colorDot(subj.color) : "#263454";
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML = `
+          <div class="meta">
+            <div class="top">
+              <span class="badge ${badgeForPriority(t.priority)}">${escapeHtml(t.priority)}</span>
+              <span class="badge">${escapeHtml(t.type)}</span>
+              <span class="badge" style="border-color:${dot}66;color:${dot};background:${dot}14">● ${escapeHtml(subjLabel)}</span>
+              <span class="badge ${dueBadge}">${escapeHtml(dueText)}</span>
+              ${t.estHours>0?`<span class="badge">${Number(t.estHours).toFixed(1)}h</span>`:""}
+            </div>
+            <p class="title" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</p>
+            <p class="desc">${t.dueDate?("Due: "+t.dueDate):""}</p>
+          </div>
+          <div class="actions">
+            <label class="btn small" style="cursor:default">
+              <input type="checkbox" ${t.done?"checked":""} data-act="toggle" data-id="${t.id}"/>
+              Done
+            </label>
+            <button class="btn small" data-act="edit" data-id="${t.id}">Edit</button>
+            <button class="btn small danger" data-act="delete" data-id="${t.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(div);
+      }
+
+      list.querySelectorAll('input[type="checkbox"][data-act="toggle"]').forEach(ch=>{
+        ch.addEventListener("change", ()=>{
+          const id=ch.getAttribute("data-id");
+          const t=state.tasks.find(x=>x.id===id);
+          if(!t) return;
+          t.done=ch.checked;
+          save();
+          renderTasks();
+          renderKPIs();
+        });
+      });
+
+      list.querySelectorAll('button[data-act]').forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const act=btn.getAttribute("data-act");
+          const id=btn.getAttribute("data-id");
+          const t=state.tasks.find(x=>x.id===id);
+          if(!t) return;
+
+          if(act==="delete"){
+            if(!confirm("Delete task?")) return;
+            state.tasks=state.tasks.filter(x=>x.id!==id);
+            save();
+            renderTasks();
+            renderKPIs();
+          }
+          if(act==="edit"){
+            const newTitle = prompt("Edit title:", t.title) ?? t.title;
+            t.title = (newTitle||"").trim() || t.title;
+
+            const newDue = prompt("Edit due date (YYYY-MM-DD) or blank:", t.dueDate||"") ?? (t.dueDate||"");
+            t.dueDate = (newDue.trim()==="" ? "" : newDue.trim());
+
+            const newHours = prompt("Edit estimated hours (number):", String(t.estHours||0)) ?? String(t.estHours||0);
+            const h=parseFloat(newHours);
+            t.estHours = isNaN(h)?t.estHours:clamp(h,0,1000);
+
+            save();
+            renderTasks();
+            renderKPIs();
+          }
+        });
+      });
+    }
+
+    function renderChat(){
+      const box=$("chatBody");
+      box.innerHTML="";
+      for(const m of state.chat.messages){
+        const div=document.createElement("div");
+        div.className="msg "+(m.who==="you"?"you":"bot");
+        div.textContent=m.text;
+        box.appendChild(div);
+      }
+      box.scrollTop = box.scrollHeight;
+    }
+    function youSay(text){
+      state.chat.messages.push({id:uid(), who:"you", text});
+      save();
+      renderChat();
+    }
+    function botSay(text){
+      state.chat.messages.push({id:uid(), who:"bot", text});
+      save();
+      renderChat();
+    }
+
+    function findNextBlock(){
+      const todayIso=toISODate(new Date());
+      const ws=parseISO(state.weekStart);
+      const we=new Date(ws); we.setDate(we.getDate()+6);
+      const t=parseISO(todayIso);
+      ws.setHours(0,0,0,0); we.setHours(0,0,0,0); t.setHours(0,0,0,0);
+
+      let startIdx=0;
+      if(t>=ws) startIdx=clamp(Math.round((t-ws)/(1000*60*60*24)),0,6);
+
+      for(let off=0; off<7; off++){
+        const d=(startIdx+off)%7;
+        const row=state.planner[String(d)]||[];
+        for(let i=0;i<3;i++){
+          const b=row[i];
+          if(b && b.minutes>0 && !b.done){
+            return {dayIndex:d, slotIndex:i, key:`${d}-${i}`, block:b, date:dateForDay(d)};
+          }
+        }
+      }
+      return null;
+    }
+
+    function dueSoonTasks(n=6){
+      const open=state.tasks.filter(t=>!t.done && t.dueDate);
+      open.sort((a,b)=>(a.dueDate||"9999-12-31").localeCompare(b.dueDate||"9999-12-31"));
+      return open.slice(0,n);
+    }
+
+    function parseAddEventCommand(text){
+      const s=text.trim();
+      const lower=s.toLowerCase();
+      if(!lower.startsWith("add event")) return null;
+
+      const rest=s.slice(9).trim();
+      const parts=rest.split(" ").filter(Boolean);
+      if(parts.length<2) return {err:"Use: add event YYYY-MM-DD [HH:MM] Title"};
+
+      const date=parts[0];
+      const hasTime=/^\d{2}:\d{2}$/.test(parts[1]);
+      const time=hasTime?parts[1]:"";
+      const titleStart=hasTime?2:1;
+      const title=parts.slice(titleStart).join(" ").trim();
+
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) return {err:"Date must be YYYY-MM-DD"};
+      if(hasTime && !/^\d{2}:\d{2}$/.test(time)) return {err:"Time must be HH:MM"};
+      if(!title) return {err:"Add a title after the date/time."};
+
+      return {date,time,title};
+    }
+
+    function parseAddTaskCommand(text){
+      const s=text.trim();
+      const lower=s.toLowerCase();
+      if(!lower.startsWith("add task")) return null;
+
+      const rest=s.slice(8).trim();
+      const m = rest.match(/^(.*?)\s+due\s+(\d{4}-\d{2}-\d{2})(?:\s+(\d+(?:\.\d+)?)h)?\s*(.*)$/i);
+      if(!m) return {err:"Use: add task <subject> due YYYY-MM-DD [2h] Title"};
+
+      const subjectName = (m[1]||"").trim();
+      const dueDate = (m[2]||"").trim();
+      const hoursRaw = (m[3]||"").trim();
+      const title = ((m[4]||"").trim()) || subjectName;
+
+      const h = hoursRaw ? parseFloat(hoursRaw) : 1.0;
+      return {subjectName, dueDate, hours:isNaN(h)?1.0:clamp(h,0,1000), title};
+    }
+
+    function bestHardestSubject(){
+      if(state.subjects.length===0) return null;
+      const nonCore=state.subjects.filter(s=>s.level!=="Core");
+      if(nonCore.length===0) return state.subjects[0];
+      nonCore.sort((a,b)=>subjectWeight(b.level)-subjectWeight(a.level));
+      return nonCore[0];
+    }
+
+    function offlineAgentRespond(userText){
+      const text=(userText||"").trim();
+      const lower=text.toLowerCase();
+      const map=getSubjectMap();
+
+      const addEvt=parseAddEventCommand(text);
+      if(addEvt){
+        if(addEvt.err) return addEvt.err;
+        const ev={id:uid(), title:addEvt.title, subjectId:"", date:addEvt.date, time:addEvt.time, duration:0, notes:""};
+        state.calendar.events.push(ev);
+        state.calendar.selectedDate=addEvt.date;
+        const d=parseISO(addEvt.date);
+        state.calendar.viewYear=d.getFullYear();
+        state.calendar.viewMonth=d.getMonth();
+        save();
+        renderCalendar();
+        renderAgenda();
+        return `Added event: ${ev.title} on ${ev.date}${ev.time?(" at "+ev.time):""}.`;
+      }
+
+      const addTask=parseAddTaskCommand(text);
+      if(addTask){
+        if(addTask.err) return addTask.err;
+        let subjectId="";
+        const subj = state.subjects.find(s=>s.name.toLowerCase().includes(addTask.subjectName.toLowerCase())) ||
+                     state.subjects.find(s=>addTask.subjectName.toLowerCase().includes(s.name.toLowerCase()));
+        if(subj) subjectId=subj.id;
+
+        state.tasks.unshift({
+          id:uid(),
+          title:addTask.title,
+          type:taskTypesForCurrent()[0] || "Task",
+          subjectId,
+          priority:"Medium",
+          dueDate:addTask.dueDate,
+          estHours:addTask.hours,
+          done:false,
+          createdAt:Date.now()
+        });
+        save();
+        renderTasks();
+        renderKPIs();
+        return `Added task: ${addTask.title} (due ${addTask.dueDate}, ~${addTask.hours}h).`;
+      }
+
+      if(lower==="next" || lower.includes("what should i do next") || lower.includes("next step")){
+        const nxt=findNextBlock();
+        if(!nxt) return "No unfinished blocks found. If you want, run Auto-generate schedule or add a Red block for your major subject.";
+        const subj=map[nxt.block.subjectId]?.name || "—";
+        const diff=nxt.block.diff || "Green";
+        return `Next: ${nxt.date} (${DAYS[nxt.dayIndex]}) Block ${["A","B","C"][nxt.slotIndex]} · ${subj} · ${nxt.block.minutes}m · ${questName(diff)}.\nTip: click the block → Start to lock the timer.`;
+      }
+
+      if(lower.includes("due") || lower.includes("deadline")){
+        const ds=dueSoonTasks(8);
+        if(ds.length===0) return "No dated tasks found. Add due dates in Tasks so I can warn you early.";
+        return "Due soon:\n" + ds.map(t=>`• ${t.dueDate}: ${t.title}`).join("\n");
+      }
+
+      if(lower.includes("plan week") || lower.includes("plan my week") || lower==="plan"){
+        const due=dueSoonTasks(6);
+        const major=bestHardestSubject();
+        const cur=CURRICULA[state.curriculum].label;
+        const tr=(CURRICULA[state.curriculum].tracks.find(x=>x.id===state.track)||{}).label || state.track;
+        let msg = `Plan (Curriculum: ${cur} · ${tr})\n`;
+        msg += `1) Run Auto-generate schedule (uses deadlines + weights).\n`;
+        msg += `2) Make Block A on weekdays = major subject practice + corrections.\n`;
+        msg += `3) Put any tasks due ≤ 7 days into Red/Yellow blocks early-week.\n`;
+        if(due.length){
+          msg += `\nTop deadlines:\n` + due.map(t=>`• ${t.dueDate}: ${t.title}`).join("\n");
+        }else{
+          msg += `\nNo deadlines found. Add tasks with due dates to make scheduling accurate.`;
+        }
+        msg += major ? `\n\nSuggested “hardest subject” focus: ${major.name}.` : "";
+        return msg;
+      }
+
+      if(lower.includes("hardest") && lower.includes("25")){
+        const s=bestHardestSubject();
+        if(!s) return "Add subjects first (Subjects tab), then ask again.";
+        const methods=chooseMethodForSubject(s.name);
+        const method=methods[0];
+        return `25-minute session for ${s.name}:\n• 18 min: ${method}\n• 5 min: mark/check\n• 2 min: write 1–3 fixes (what you missed + correct method)\nIf you finish early: redo the worst question clean.`;
+      }
+
+      if(lower.includes("reschedule") || lower.includes("auto") || lower.includes("generate schedule")){
+        autoGenerateSchedule();
+        save();
+        renderPlanner();
+        renderKPIs();
+        return "Schedule generated. Start with today’s Red block.";
+      }
+
+      if(lower.includes("how do i") || lower.includes("explain")){
+        return "I can help with planning/structure. For content tutoring, ask a specific topic + what curriculum (IB/LB/FR) and I’ll suggest the best practice format (types of questions, timed steps, marking approach).";
+      }
+
+      return "I can do: next • due soon • plan week • add task <subject> due YYYY-MM-DD [2h] Title • add event YYYY-MM-DD [HH:MM] Title • reschedule.";
+    }
+
+    async function connectedAIRespond(userText){
+      const url = state.settings.aiUrl.trim();
+      const key = state.settings.aiKey.trim();
+      if(!url || !key) return "Connected mode needs URL + key in Settings.";
+
+      const sys = [
+        "You are a study-planner AI. You must be concise and action-focused.",
+        "The user is a student; prioritize safe, non-harmful content.",
+        "You have access to the user's planner data via the provided JSON in the user message.",
+        "If asked to modify schedule, propose concrete changes, not general advice."
+      ].join(" ");
+
+      const payload = {
+        model: state.settings.aiModel || undefined,
+        messages: [
+          {role:"system", content: sys},
+          {role:"user", content:
+            "Planner JSON:\n" + JSON.stringify({
+              curriculum: state.curriculum,
+              track: state.track,
+              weekStart: state.weekStart,
+              targetHours: state.targetHours,
+              subjects: state.subjects,
+              tasks: state.tasks,
+              planner: state.planner,
+              events: state.calendar.events
+            }) + "\n\nUser message:\n" + userText
+          }
+        ],
+        temperature: 0.5
+      };
+
+      const res = await fetch(url, {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer " + key
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const txt = await res.text().catch(()=> "");
+        return `AI request failed (${res.status}). Check URL/key. ${txt.slice(0,200)}`;
+      }
+
+      const data = await res.json();
+      const msg = data?.choices?.[0]?.message?.content;
+      return (msg && String(msg).trim()) ? String(msg).trim() : "AI returned no message.";
+    }
+
+    async function botRespond(userText){
+      try{
+        if(state.settings.aiMode==="CONNECTED"){
+          const out = await connectedAIRespond(userText);
+          botSay(out);
+          return;
+        }
+        botSay(offlineAgentRespond(userText));
+      }catch(e){
+        botSay("Something went wrong. Switch to Offline mode in Settings, or check your connected endpoint.");
+      }
+    }
+
+    function renderAISettingsUI(){
+      $("aiMode").value = state.settings.aiMode || "OFFLINE";
+      $("uiLang").value = state.settings.uiLang || "EN";
+      $("aiUrl").value = state.settings.aiUrl || "";
+      $("aiKey").value = state.settings.aiKey || "";
+      $("aiModel").value = state.settings.aiModel || "";
+      $("aiConnectedBox").style.display = (state.settings.aiMode==="CONNECTED") ? "block" : "none";
+      $("aiModeLabel").textContent = state.settings.aiMode==="CONNECTED" ? "Connected endpoint" : "Offline agent (local)";
+    }
+
+    function linkTimerTo(slotKey){
+      state.timer.linkedBlock = slotKey || "";
+      save();
+      syncTimerWithLinkedBlock(true);
+      renderTimerUI();
+      renderPlanner();
+    }
+
+    function getBlockByKey(slotKey){
+      if(!slotKey) return null;
+      const [d,i]=slotKey.split("-").map(Number);
+      return state.planner[String(d)]?.[i] || null;
+    }
+
+    function linkedBlockText(){
+      if(!state.timer.linkedBlock) return "Not linked to a block";
+      const [d,i]=state.timer.linkedBlock.split("-").map(Number);
+      const b=state.planner[String(d)]?.[i];
+      const map=getSubjectMap();
+      const name=map[b?.subjectId]?.name || "—";
+      const mins=b?.minutes||0;
+      return `Linked: ${DAYS[d]} Block ${["A","B","C"][i]} · ${name} · ${mins}m`;
+    }
+
+    function syncTimerWithLinkedBlock(force){
+      if(!state.timer.useBlockMinutes) return;
+      if(state.timer.mode!=="focus") return;
+      if(state.timer.running) return;
+      if(!state.timer.linkedBlock) return;
+      const b=getBlockByKey(state.timer.linkedBlock);
+      if(!b || !b.minutes || b.minutes<=0) return;
+      const m=clamp(parseInt(String(b.minutes),10),5,600);
+      $("focusMin").value=String(m);
+      state.timer.focusMin=m;
+      if(force) state.timer.remainingSec=m*60;
+      save();
+    }
+
+    function setTimerMode(mode, keepLinked){
+      state.timer.mode=mode;
+      const focusM=clamp(parseInt($("focusMin").value||"25",10),5,600);
+      const breakM=clamp(parseInt($("breakMin").value||"5",10),1,120);
+      state.timer.focusMin=focusM;
+      state.timer.breakMin=breakM;
+      if(mode==="focus"){
+        state.timer.remainingSec=focusM*60;
+        syncTimerWithLinkedBlock(true);
+      }else{
+        state.timer.remainingSec=breakM*60;
+      }
+      state.timer.running=false;
+      stopTimerLoop();
+      save();
+      renderTimerUI();
+      renderPlanner();
+    }
+
+    function fmtTime(sec){
+      const s=Math.max(0, sec|0);
+      const mm=String(Math.floor(s/60)).padStart(2,"0");
+      const ss=String(s%60).padStart(2,"0");
+      return `${mm}:${ss}`;
+    }
+
+    let timerInterval=null;
+    function stopTimerLoop(){
+      if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+    }
+
+    function markLinkedBlockDoneFromTimer(){
+      if(!state.timer.linkedBlock) return false;
+      const b=getBlockByKey(state.timer.linkedBlock);
+      if(!b || b.minutes<=0) return false;
+      if(!b.done){
+        b.done=true;
+        if(state.gamify.enabled && !b.xpAwarded){
+          awardXP(b);
+          b.xpAwarded=true;
+        }
+        updateStreakIfNeeded();
+        return true;
+      }
+      return false;
+    }
+
+    function startTimer(){
+      if(state.timer.running) return;
+      if(state.timer.mode==="focus") syncTimerWithLinkedBlock(true);
+
+      state.timer.running=true;
+      save();
+      renderTimerUI();
+      stopTimerLoop();
+
+      timerInterval=setInterval(()=>{
+        if(!state.timer.running) return;
+        state.timer.remainingSec -= 1;
+
+        if(state.timer.remainingSec<=0){
+          state.timer.remainingSec=0;
+          state.timer.running=false;
+          stopTimerLoop();
+
+          const didMark = (state.timer.mode==="focus") ? markLinkedBlockDoneFromTimer() : false;
+          if(didMark) confettiBurst();
+          beep();
+          toast(state.timer.mode==="focus" ? "Focus complete" : "Break complete", "Switch mode when ready.");
+
+          save();
+          renderKPIs();
+          renderGamify();
+          renderPlanner();
+          renderTimerUI(true);
+          return;
+        }
+
+        save();
+        renderTimerUI(true);
+      }, 1000);
+    }
+
+    function pauseTimer(){
+      state.timer.running=false;
+      save();
+      renderTimerUI();
+      stopTimerLoop();
+    }
+
+    function resetTimer(){
+      const focusM=clamp(parseInt($("focusMin").value||"25",10),5,600);
+      const breakM=clamp(parseInt($("breakMin").value||"5",10),1,120);
+      state.timer.focusMin=focusM;
+      state.timer.breakMin=breakM;
+      state.timer.remainingSec=(state.timer.mode==="focus"?focusM:breakM)*60;
+      state.timer.running=false;
+      save();
+      renderTimerUI();
+      stopTimerLoop();
+    }
+
+    function renderTimerUI(skipInputs){
+      $("timerDisplay").textContent=fmtTime(state.timer.remainingSec);
+      $("timerModeLabel").textContent=`Mode: ${state.timer.mode==="focus"?"Focus":"Break"}`;
+      $("timerLinkLabel").textContent=linkedBlockText();
+      if(!skipInputs){
+        $("focusMin").value=String(state.timer.focusMin||25);
+        $("breakMin").value=String(state.timer.breakMin||5);
+      }
+      $("timerStart").textContent = state.timer.running ? "Running…" : "▶ Start";
+      $("timerStart").disabled = state.timer.running;
+    }
+
+    function renderCalendar(){
+      const grid=$("calGrid");
+      grid.innerHTML="";
+
+      const y=state.calendar.viewYear;
+      const m=state.calendar.viewMonth;
+      const first=new Date(y,m,1);
+      const last=new Date(y,m+1,0);
+      const todayIso=toISODate(new Date());
+
+      const monthName=first.toLocaleString(undefined,{month:"long"});
+      $("calLabel").textContent=`${monthName} ${y}`;
+
+      for(const dow of DOWS){
+        const div=document.createElement("div");
+        div.className="calDow";
+        div.textContent=dow;
+        grid.appendChild(div);
+      }
+
+      const jsDay=first.getDay();
+      const offset=(jsDay===0?6:jsDay-1);
+      const totalCells=offset+last.getDate();
+      const cells=Math.ceil(totalCells/7)*7;
+
+      const eventsByDate={};
+      for(const ev of state.calendar.events){
+        if(!ev.date) continue;
+        if(!eventsByDate[ev.date]) eventsByDate[ev.date]=[];
+        eventsByDate[ev.date].push(ev);
+      }
+
+      for(let i=0;i<cells;i++){
+        const dayNum=i-offset+1;
+        const inMonth=dayNum>=1 && dayNum<=last.getDate();
+        const dateIso=inMonth?toISODate(new Date(y,m,dayNum)):"";
+
+        const cell=document.createElement("div");
+        cell.className="dayCell"+(inMonth?"":" dayGhost");
+        cell.setAttribute("data-date", dateIso);
+
+        const num=document.createElement("div");
+        num.className="dayNum"+(dateIso===todayIso?" today":"");
+        num.textContent=inMonth?String(dayNum):"";
+        cell.appendChild(num);
+
+        const evWrap=document.createElement("div");
+        evWrap.className="evt";
+
+        const evs=(dateIso && eventsByDate[dateIso])?eventsByDate[dateIso].slice(0,3):[];
+        for(const ev of evs){
+          const chip=document.createElement("div");
+          chip.className="evtChip";
+          const left=document.createElement("span");
+          left.textContent=ev.title||"Event";
+          const right=document.createElement("em");
+          right.textContent=(ev.time||"").trim();
+          chip.appendChild(left);
+          chip.appendChild(right);
+          evWrap.appendChild(chip);
+        }
+        if(dateIso && eventsByDate[dateIso] && eventsByDate[dateIso].length>3){
+          const more=document.createElement("div");
+          more.className="evtChip";
+          more.innerHTML=`<span>+${eventsByDate[dateIso].length-3} more</span><em></em>`;
+          evWrap.appendChild(more);
+        }
+        cell.appendChild(evWrap);
+
+        cell.addEventListener("click", ()=>{
+          if(!inMonth) return;
+          state.calendar.selectedDate=dateIso;
+          save();
+          renderAgenda();
+        });
+        cell.addEventListener("dblclick", ()=>{
+          if(!inMonth) return;
+          openEventDialog({date:dateIso});
+        });
+
+        grid.appendChild(cell);
+      }
+    }
+
+    function fmtEvent(ev){
+      const map=getSubjectMap();
+      const subj=map[ev.subjectId]?.name || "";
+      const time=ev.time?ev.time:"";
+      const dur=ev.duration?`${ev.duration}m`:"";
+      return [time,dur,subj].filter(Boolean).join(" · ") || "—";
+    }
+
+    function sortEventsForDate(dateIso){
+      const evs=state.calendar.events.filter(e=>e.date===dateIso);
+      evs.sort((a,b)=>(a.time||"99:99").localeCompare(b.time||"99:99"));
+      return evs;
+    }
+
+    function renderAgenda(){
+      const box=$("calAgenda");
+      box.innerHTML="";
+      const dateIso=state.calendar.selectedDate || toISODate(new Date());
+      const d=parseISO(dateIso);
+      const label=d.toLocaleString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+
+      const hdr=document.createElement("div");
+      hdr.className="item";
+      hdr.innerHTML=`
+        <div class="meta">
+          <div class="top"><span class="badge">Agenda</span><span class="badge good">${dateIso}</span></div>
+          <p class="title">${escapeHtml(label)}</p>
+          <p class="desc">Double-click a day to add. Or press “Add event”.</p>
+        </div>
+        <div class="actions"><button class="btn good" id="agendaAdd">＋ Add</button></div>
+      `;
+      box.appendChild(hdr);
+      hdr.querySelector("#agendaAdd").addEventListener("click", ()=>openEventDialog({date:dateIso}));
+
+      const evs=sortEventsForDate(dateIso);
+      if(evs.length===0){
+        const empty=document.createElement("div");
+        empty.className="item";
+        empty.innerHTML=`
+          <div class="meta">
+            <div class="top"><span class="badge">No events</span></div>
+            <p class="title">Clear day.</p>
+            <p class="desc">Add one thing that matters (mock, deadline, revision session).</p>
+          </div>
+          <div class="actions"><button class="btn primary" id="emptyAdd">Add event</button></div>
+        `;
+        box.appendChild(empty);
+        empty.querySelector("#emptyAdd").addEventListener("click", ()=>openEventDialog({date:dateIso}));
+        return;
+      }
+
+      for(const ev of evs){
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`
+          <div class="meta">
+            <div class="top">
+              <span class="badge">${escapeHtml(ev.time||"—")}</span>
+              <span class="badge">${escapeHtml(ev.duration?ev.duration+"m":"—")}</span>
+            </div>
+            <p class="title" title="${escapeHtml(ev.title||"")}">${escapeHtml(ev.title||"Event")}</p>
+            <p class="desc">${escapeHtml(fmtEvent(ev))}${ev.notes?" · "+escapeHtml(ev.notes):""}</p>
+          </div>
+          <div class="actions">
+            <button class="btn" data-act="editEvt" data-id="${ev.id}">Edit</button>
+            <button class="btn danger" data-act="delEvt" data-id="${ev.id}">Delete</button>
+          </div>
+        `;
+        box.appendChild(div);
+      }
+
+      box.querySelectorAll('button[data-act="editEvt"]').forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const id=b.getAttribute("data-id");
+          const ev=state.calendar.events.find(e=>e.id===id);
+          if(ev) openEventDialog(ev);
+        });
+      });
+      box.querySelectorAll('button[data-act="delEvt"]').forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const id=b.getAttribute("data-id");
+          if(!confirm("Delete event?")) return;
+          state.calendar.events=state.calendar.events.filter(e=>e.id!==id);
+          save();
+          renderCalendar();
+          renderAgenda();
+        });
+      });
+    }
+
+    const dlgEvent=$("dlgEvent");
+    let editingEventId="";
+    function openEventDialog(ev){
+      editingEventId=ev.id||"";
+      $("evtDlgTitle").textContent = editingEventId ? "Edit Event" : "Add Event";
+      $("evtTitle").value = ev.title||"";
+      $("evtSubject").value = ev.subjectId||"";
+      $("evtDate").value = ev.date || state.calendar.selectedDate || toISODate(new Date());
+      $("evtTime").value = ev.time||"";
+      $("evtDur").value = ev.duration ? String(ev.duration) : "";
+      $("evtNotes").value = ev.notes||"";
+      $("evtDelete").style.display = editingEventId ? "inline-flex" : "none";
+      dlgEvent.showModal();
+    }
+
+    function renderAll(){
+      $("studentName").value = state.studentName||"";
+      $("curriculum").value = state.curriculum||"IB";
+      buildTrackOptions();
+      $("track").value = state.track||"";
+      $("weekStart").value = state.weekStart || toISODate(mondayOf(new Date()));
+      $("targetHours").value = String(state.targetHours ?? 0);
+      $("schedulerStyle").value = state.schedulerStyle || "balanced";
+      $("weeklyPriorities").value = state.weeklyPriorities||"";
+      $("weeklyReflection").value = state.weeklyReflection||"";
+      $("gamifyToggle").checked = !!state.gamify.enabled;
+      $("blockTimerToggle").checked = !!state.timer.useBlockMinutes;
+
+      renderTaskTypeOptions();
+      renderTaskSubjectOptions();
+      renderEventSubjectOptions();
+      renderHeader();
+      renderSubjects();
+      renderTasks();
+      renderPlanner();
+      renderKPIs();
+      renderGamify();
+      renderTimerUI();
+      renderCalendar();
+      renderAgenda();
+      renderChat();
+      renderAISettingsUI();
+    }
+
+    function initIfNoSubjects(){
+      if(!Array.isArray(state.subjects) || state.subjects.length===0){
+        restorePresetSubjects();
+      }
+    }
+
+    $("btnPrint").addEventListener("click", ()=>window.print());
+    $("btnReset").addEventListener("click", ()=>{
+      if(!confirm("Reset planner? This clears everything stored in this browser.")) return;
+      localStorage.removeItem(LS_KEY);
+      location.reload();
+    });
+
+    $("studentName").addEventListener("input", (e)=>{ state.studentName=e.target.value; save(); });
+    $("targetHours").addEventListener("input", (e)=>{
+      const v=parseFloat(e.target.value);
+      state.targetHours = isNaN(v)?0:clamp(v,0,200);
+      save();
+      renderKPIs();
+    });
+
+    $("weeklyPriorities").addEventListener("input", (e)=>{ state.weeklyPriorities=e.target.value; save(); });
+    $("weeklyReflection").addEventListener("input", (e)=>{ state.weeklyReflection=e.target.value; save(); });
+
+    $("curriculum").addEventListener("change", ()=>{
+      state.curriculum = $("curriculum").value;
+      buildTrackOptions();
+      state.track = $("track").value;
+      renderTaskTypeOptions();
+      restorePresetSubjects();
+      save();
+      renderAll();
+    });
+
+    $("track").addEventListener("change", ()=>{
+      state.track = $("track").value;
+      renderTaskTypeOptions();
+      restorePresetSubjects();
+      save();
+      renderAll();
+    });
+
+    $("schedulerStyle").addEventListener("change", ()=>{
+      state.schedulerStyle = $("schedulerStyle").value;
+      save();
+    });
+
+    $("weekStart").addEventListener("change", (e)=>{
+      const d=mondayOf(parseISO(e.target.value || toISODate(new Date())));
+      state.weekStart=toISODate(d);
+      save();
+      renderAll();
+    });
+
+    $("weekStart").addEventListener("blur", ()=>{
+      const iso=$("weekStart").value;
+      if(!iso) return;
+      const snapped=toISODate(mondayOf(parseISO(iso)));
+      if(snapped!==iso){
+        $("weekStart").value=snapped;
+        state.weekStart=snapped;
+        save();
+        renderHeader();
+      }
+    });
+
+    $("gamifyToggle").addEventListener("change", ()=>{
+      state.gamify.enabled = $("gamifyToggle").checked;
+      save();
+      renderGamify();
+      renderPlanner();
+    });
+
+    $("blockTimerToggle").addEventListener("change", ()=>{
+      state.timer.useBlockMinutes = $("blockTimerToggle").checked;
+      save();
+      syncTimerWithLinkedBlock(true);
+      renderTimerUI();
+      renderPlanner();
+    });
+
+    $("plannerTemplate").addEventListener("change", ()=>{});
+
+    $("btnApplyTemplate").addEventListener("click", ()=>{
+      applyTemplate($("plannerTemplate").value);
+      save();
+      renderPlanner();
+      renderKPIs();
+      syncTimerWithLinkedBlock(true);
+      renderTimerUI();
+      toast("Template applied", "Now you can auto-generate content into the blocks.");
+    });
+
+    $("btnClearWeek").addEventListener("click", ()=>{
+      if(!confirm("Clear all blocks for this week?")) return;
+      state.planner = defaultPlanner();
+      applyTemplate($("plannerTemplate").value);
+      state.timer.linkedBlock="";
+      save();
+      renderAll();
+      toast("Cleared", "Week blocks reset.");
+    });
+
+    $("btnAutoSchedule").addEventListener("click", ()=>{
+      autoGenerateSchedule();
+      save();
+      renderPlanner();
+      renderKPIs();
+      syncTimerWithLinkedBlock(true);
+      renderTimerUI();
+      botSay("Schedule generated. Start with today’s Red block. Type “next” if you want me to pick it.");
+    });
+
+    $("btnNewWeek").addEventListener("click", ()=>{
+      const current=parseISO(state.weekStart);
+      current.setDate(current.getDate()+7);
+      state.weekStart = toISODate(mondayOf(current));
+      for(let d=0; d<7; d++){
+        for(const b of state.planner[String(d)]){
+          b.done=false;
+          b.xpAwarded=false;
+        }
+      }
+      state.weeklyReflection="";
+      state.timer.linkedBlock="";
+      save();
+      renderAll();
+      botSay("New week ready. Apply a template then auto-generate schedule.");
+    });
+
+    $("btnAddSubject").addEventListener("click", ()=>{
+      const name=$("subjName").value.trim();
+      const level=$("subjLevel").value;
+      const color=$("subjColor").value;
+      if(!name) return toast("Missing", "Enter a subject name.");
+      state.subjects.push({id:uid(), name, level, color});
+      $("subjName").value="";
+      save();
+      renderSubjects();
+      renderTaskSubjectOptions();
+      renderEventSubjectOptions();
+      renderPlanner();
+      renderTasks();
+      toast("Subject added", name);
+    });
+
+    $("btnRestorePreset").addEventListener("click", ()=>{
+      if(!confirm("Restore preset subjects? This overwrites your current subjects list.")) return;
+      restorePresetSubjects();
+    });
+
+    $("btnAddTask").addEventListener("click", ()=>{
+      const title=$("taskTitle").value.trim();
+      if(!title) return toast("Missing", "Add a task title.");
+      const type=$("taskType").value;
+      const subjectId=$("taskSubject").value || "";
+      const priority=$("taskPriority").value;
+      const dueDate=$("taskDue").value || "";
+      const estHours=parseFloat($("taskHours").value || "0");
+      state.tasks.unshift({
+        id:uid(),
+        title,
+        type,
+        subjectId,
+        priority,
+        dueDate,
+        estHours: isNaN(estHours)?0:clamp(estHours,0,1000),
+        done:false,
+        createdAt:Date.now()
+      });
+      $("taskTitle").value="";
+      $("taskDue").value="";
+      $("taskHours").value="";
+      save();
+      renderTasks();
+      renderKPIs();
+      toast("Task added", title);
+    });
+
+    ["taskFilter","taskShow","taskSort"].forEach(id=>{
+      $(id).addEventListener("input", ()=>renderTasks());
+      $(id).addEventListener("change", ()=>renderTasks());
+    });
+
+    $("timerStart").addEventListener("click", startTimer);
+    $("timerPause").addEventListener("click", pauseTimer);
+    $("timerReset").addEventListener("click", resetTimer);
+    $("timerFocusBtn").addEventListener("click", ()=>setTimerMode("focus"));
+    $("timerBreakBtn").addEventListener("click", ()=>setTimerMode("break"));
+    $("timerSyncBtn").addEventListener("click", ()=>{
+      syncTimerWithLinkedBlock(true);
+      renderTimerUI();
+      toast("Synced", "Focus timer synced to linked block minutes.");
+    });
+
+    $("focusMin").addEventListener("change", ()=>{
+      const v=clamp(parseInt($("focusMin").value||"25",10),5,600);
+      state.timer.focusMin=v;
+      if(state.timer.mode==="focus" && !state.timer.running) state.timer.remainingSec=v*60;
+      save();
+      renderTimerUI();
+    });
+    $("breakMin").addEventListener("change", ()=>{
+      const v=clamp(parseInt($("breakMin").value||"5",10),1,120);
+      state.timer.breakMin=v;
+      if(state.timer.mode==="break" && !state.timer.running) state.timer.remainingSec=v*60;
+      save();
+      renderTimerUI();
+    });
+
+    function linkTimerTo(slotKey){
+      state.timer.linkedBlock=slotKey||"";
+      save();
+      syncTimerWithLinkedBlock(true);
+      renderTimerUI();
+      renderPlanner();
+    }
+
+    $("calPrev").addEventListener("click", ()=>{
+      let y=state.calendar.viewYear;
+      let m=state.calendar.viewMonth-1;
+      if(m<0){m=11;y-=1}
+      state.calendar.viewYear=y;
+      state.calendar.viewMonth=m;
+      save();
+      renderCalendar();
+    });
+    $("calNext").addEventListener("click", ()=>{
+      let y=state.calendar.viewYear;
+      let m=state.calendar.viewMonth+1;
+      if(m>11){m=0;y+=1}
+      state.calendar.viewYear=y;
+      state.calendar.viewMonth=m;
+      save();
+      renderCalendar();
+    });
+    $("calToday").addEventListener("click", ()=>{
+      const t=new Date();
+      state.calendar.viewYear=t.getFullYear();
+      state.calendar.viewMonth=t.getMonth();
+      state.calendar.selectedDate=toISODate(t);
+      save();
+      renderCalendar();
+      renderAgenda();
+    });
+    $("calAdd").addEventListener("click", ()=>openEventDialog({date: state.calendar.selectedDate || toISODate(new Date())}));
+
+    $("evtDlgClose").addEventListener("click", ()=>dlgEvent.close());
+    $("evtSave").addEventListener("click", ()=>{
+      const title=$("evtTitle").value.trim();
+      const subjectId=$("evtSubject").value || "";
+      const date=$("evtDate").value || "";
+      const time=$("evtTime").value || "";
+      const duration=parseInt($("evtDur").value || "0",10);
+      const notes=$("evtNotes").value.trim();
+      if(!date) return toast("Missing", "Pick a date.");
+
+      const clean={
+        id: editingEventId || uid(),
+        title: title || "Event",
+        subjectId,
+        date,
+        time,
+        duration: isNaN(duration)?0:clamp(duration,0,1440),
+        notes
+      };
+
+      if(editingEventId){
+        const idx=state.calendar.events.findIndex(e=>e.id===editingEventId);
+        if(idx>=0) state.calendar.events[idx]=clean;
+      }else{
+        state.calendar.events.push(clean);
+      }
+
+      state.calendar.selectedDate=date;
+      const d=parseISO(date);
+      state.calendar.viewYear=d.getFullYear();
+      state.calendar.viewMonth=d.getMonth();
+
+      save();
+      dlgEvent.close();
+      renderCalendar();
+      renderAgenda();
+      botSay(`Event saved: ${clean.title} on ${clean.date}${clean.time?(" at "+clean.time):""}.`);
+    });
+
+    $("evtDelete").addEventListener("click", ()=>{
+      if(!editingEventId) return;
+      if(!confirm("Delete event?")) return;
+      state.calendar.events=state.calendar.events.filter(e=>e.id!==editingEventId);
+      save();
+      dlgEvent.close();
+      renderCalendar();
+      renderAgenda();
+    });
+
+    $("chatSend").addEventListener("click", ()=>{
+      const t=$("chatText").value.trim();
+      if(!t) return;
+      $("chatText").value="";
+      youSay(t);
+      botRespond(t);
+    });
+
+    $("chatText").addEventListener("keydown", (e)=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        $("chatSend").click();
+      }
+    });
+
+    document.querySelectorAll('.quickRow button[data-q]').forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const q=b.getAttribute("data-q")||"";
+        youSay(q);
+        botRespond(q);
+      });
+    });
+
+    $("btnChatClear").addEventListener("click", ()=>{
+      if(!confirm("Clear chat?")) return;
+      state.chat.messages=[{id:uid(), who:"bot", text:"Chat cleared. Try: next • due soon • plan week • add task … • add event …"}];
+      save();
+      renderChat();
+    });
+
+    const tabs=[...document.querySelectorAll(".tab")];
+    tabs.forEach(t=>{
+      t.addEventListener("click", ()=>{
+        tabs.forEach(x=>x.classList.remove("active"));
+        t.classList.add("active");
+        const view=t.getAttribute("data-view");
+        document.querySelectorAll(".views > section").forEach(s=>s.classList.remove("active"));
+        $("view-"+view).classList.add("active");
+        if(view==="calendar"){ renderCalendar(); renderAgenda(); }
+      });
+    });
+
+    const dlgData=$("dlgData");
+    $("btnExport").addEventListener("click", ()=>{
+      $("dlgDataTitle").textContent="Export / Import";
+      $("exportBox").textContent=JSON.stringify(state, null, 2);
+      $("importBox").value="";
+      dlgData.showModal();
+    });
+    $("btnImport").addEventListener("click", ()=>{
+      $("dlgDataTitle").textContent="Export / Import";
+      $("exportBox").textContent=JSON.stringify(state, null, 2);
+      dlgData.showModal();
+      $("importBox").focus();
+    });
+    $("btnCloseDlgData").addEventListener("click", ()=>dlgData.close());
+
+    $("btnCopyExport").addEventListener("click", async ()=>{
+      try{
+        await navigator.clipboard.writeText(JSON.stringify(state, null, 2));
+        toast("Copied", "Export copied to clipboard.");
+      }catch{
+        toast("Copy failed", "Select and copy manually from the box.");
+      }
+    });
+
+    $("btnDownloadExport").addEventListener("click", ()=>{
+      const blob=new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+      const a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);
+      a.download="study-planner-export.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    $("btnDoImport").addEventListener("click", ()=>{
+      const txt=$("importBox").value.trim();
+      if(!txt) return toast("Missing", "Paste JSON first.");
+      try{
+        const parsed=JSON.parse(txt);
+        if(!parsed || typeof parsed!=="object") throw new Error("Invalid JSON");
+        localStorage.setItem(LS_KEY, JSON.stringify(parsed));
+        location.reload();
+      }catch{
+        toast("Import failed", "Use JSON exported from this planner.");
+      }
+    });
+
+    const dlgSettings=$("dlgSettings");
+    $("btnSettings").addEventListener("click", ()=>{
+      renderAISettingsUI();
+      dlgSettings.showModal();
+    });
+    $("btnCloseSettings").addEventListener("click", ()=>dlgSettings.close());
+
+    $("aiMode").addEventListener("change", ()=>{
+      state.settings.aiMode = $("aiMode").value;
+      save();
+      renderAISettingsUI();
+      toast("AI mode updated", state.settings.aiMode==="CONNECTED" ? "Connected endpoint" : "Offline agent");
+    });
+
+    $("uiLang").addEventListener("change", ()=>{
+      state.settings.uiLang = $("uiLang").value;
+      save();
+      toast("Saved", "Language setting stored (UI labels remain English in this release).");
+    });
+
+    $("aiUrl").addEventListener("input", ()=>{ state.settings.aiUrl=$("aiUrl").value; save(); });
+    $("aiKey").addEventListener("input", ()=>{ state.settings.aiKey=$("aiKey").value; save(); });
+    $("aiModel").addEventListener("input", ()=>{ state.settings.aiModel=$("aiModel").value; save(); });
+
+    $("btnTestAI").addEventListener("click", async ()=>{
+      try{
+        const out = await connectedAIRespond("Reply with: OK");
+        toast("AI Test", out.slice(0,140));
+      }catch{
+        toast("AI Test failed", "Check URL/key and CORS policy.");
+      }
+    });
+
+    initIfNoSubjects();
+    buildTrackOptions();
+    renderTaskTypeOptions();
+    renderAll();
+    save();
+    syncTimerWithLinkedBlock(true);
+    renderTimerUI();
+  </script>
+</body>
+</html>
