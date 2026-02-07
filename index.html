@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark"/>
   <title>Study Planner • IB + Lebanese + French</title>
   <style>
@@ -514,7 +514,6 @@
       .tab:active{transform:none}
       .btn:active{transform:none}
     }
-
     @media print{
       body{background:#fff;color:#000}
       .btn,.tabs,.top-actions,.planner-top .right,.no-print,.confettiWrap,.toastWrap{display:none !important}
@@ -523,6 +522,69 @@
       input,select,textarea{border:1px solid #bbb;background:#fff;color:#000}
       th{position:static}
     }
+@media (max-width: 780px){
+  input, select, textarea, button { font-size:16px; } 
+  .btn, .switch { min-height:44px; } 
+  .tab { min-height:40px; }
+  .pill, .badge { line-height:1.2; }
+}
+@supports (padding: max(0px)){
+  body{
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right:max(0px, env(safe-area-inset-right));
+    padding-bottom:max(0px, env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 780px){
+  .wrap{ padding: 10px 12px 40px; }
+  header{ gap:10px; }
+  .top-actions{ gap:8px; }
+  .top-actions .btn, .top-actions .switch{ flex: 1 1 auto; justify-content:center; }
+}
+@media (max-width: 780px){
+  .tabs{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .tabs::-webkit-scrollbar{ height: 6px; }
+}
+@media (max-width: 980px){
+  .planner{ overflow-x:auto; }
+  .planner table{ min-width: 880px; }
+  th, td{ padding: 8px; }
+}
+@media (max-width: 780px){
+  .slot{ min-height: 120px; }
+  .slot .slot-row{ gap:8px; }
+  .slot .slot-row .tiny,
+  .slot .slot-row .tiny2,
+  .slot .slot-row .tiny3,
+  .slot .slot-row .tiny4{ min-width: 180px; flex: 1 1 220px; }
+  .slot .slot-footer{ gap:8px; }
+}
+@media (max-width: 980px){
+  #view-tasks .row{ overflow-x:auto; -webkit-overflow-scrolling: touch; }
+  #view-tasks .row > .field{ min-width: 220px; }
+  #view-tasks .row > .field.tiny{ min-width: 160px; }
+}
+@media (max-width: 780px){
+  .calGrid{ gap:6px; padding:10px; }
+  .dayCell{ min-height: 96px; padding:8px; }
+  .evtChip{ font-size:10px; }
+}
+@media (max-width: 780px){
+  .chatBody{ max-height: 240px; }
+}
+@media (max-width: 780px){
+  dialog{
+    width: calc(100% - 16px);
+    max-width: none;
+    margin: 8px;
+  }
+  .codebox{ max-height: 45vh; }
+}
   </style>
 </head>
 <body>
@@ -1011,6 +1073,7 @@
   </div>
 
   <script>
+    document.documentElement.style.touchAction = "manipulation";
     const LS_KEY = "study_planner_release_v1";
 
     const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -3261,4 +3324,3 @@
   </script>
 </body>
 </html>
-
